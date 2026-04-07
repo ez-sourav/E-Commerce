@@ -32,7 +32,7 @@ export const registerUserController = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "User regiterted successfully.",
+            message: "User registered successfully.",
             user: {
                 id: user._id,
                 name: user.name,
@@ -41,7 +41,7 @@ export const registerUserController = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: error.message
         })
@@ -54,13 +54,13 @@ export const loginUserController = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All field required."
+                message: "All fields are required."
             })
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
                 message: "Invalid credentials."
             })
@@ -68,7 +68,7 @@ export const loginUserController = async (req, res) => {
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
                 message: "Invalid credentials."
             })
@@ -80,7 +80,7 @@ export const loginUserController = async (req, res) => {
             { expiresIn: "2d" }
         );
 
-        res.cookie("token", token, {
+        return res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: 'strict',
@@ -91,22 +91,21 @@ export const loginUserController = async (req, res) => {
         })
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: error.message
         });
     }
-    
+
 }
 
-export const logoutUserController = (req,res)=>{
-    res.clearCookie('token',{
-        httpOnly:true,
+export const logoutUserController = (req, res) => {
+    return res.clearCookie('token', {
+        httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: 'strict'
-    })
-    return res.status(200).json({
-        success:true,
-        message:"User logged out successfully."
+    }).status(200).json({
+        success: true,
+        message: "User logged out successfully."
     })
 }
