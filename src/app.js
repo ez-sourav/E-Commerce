@@ -11,7 +11,7 @@ app.use(cookieParser());
 
 app.use('/api/auth',authRouters);
 app.use('/api/test',testroutes);
-app.use('/api/product',productrouters);
+app.use('/api/products',productrouters);
 
 app.get('/',(req,res)=>{
     res.send("API is running...");
