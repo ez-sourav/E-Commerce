@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRouters from './routes/auth.route.js'
 import testroutes from "./routes/test.route.js";
 import productrouters from './routes/product.route.js';
+import cartroutes from './routes/cart.route.js';
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,7 @@ app.use(cookieParser());
 app.use('/api/auth',authRouters);
 app.use('/api/test',testroutes);
 app.use('/api/products',productrouters);
+app.use('/api/cart',cartroutes);
 
 app.get('/',(req,res)=>{
     res.send("API is running...");
