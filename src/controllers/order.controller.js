@@ -39,7 +39,6 @@ export const createOrder = async (req, res) => {
             totalPrice
         });
 
-
         await Promise.all(
             cart.items.map(item => {
                 item.product.stock -= item.quantity;
@@ -48,7 +47,6 @@ export const createOrder = async (req, res) => {
         );
 
         await cart.deleteOne();
-
 
         return res.status(201).json({
             success: true,
@@ -63,6 +61,8 @@ export const createOrder = async (req, res) => {
         });
     }
 };
+
+
 export const getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user._id })
