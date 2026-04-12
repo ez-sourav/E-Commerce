@@ -1,4 +1,4 @@
-# 🚀 MERN Backend E-Commerce System (with Swagger API Docs)
+# 🚀 Backend E-Commerce System (with Swagger API Docs)
 
 A production-level backend system built using the MERN stack, implementing authentication, role-based access, product management, cart functionality, and order processing.
 
