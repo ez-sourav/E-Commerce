@@ -164,12 +164,6 @@ http://localhost:3000/api-docs
 
 ---
 
-## 📬 Contact
-
-If you have any questions or suggestions, feel free to connect.
-
----
-
 ## ⭐ Show Your Support
 
 Give a ⭐ if you like this project!
