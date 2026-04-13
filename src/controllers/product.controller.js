@@ -53,7 +53,7 @@ export const createProduct = async (req, res) => {
             if (invalidVariant) {
                 return res.status(400).json({
                     success: false,
-                    message: "Each variant must have stock"
+                    message: "Each variant must have attributes and stock"
                 });
             }
         }
@@ -64,7 +64,7 @@ export const createProduct = async (req, res) => {
             description,
             category,
             productType,
-            stock: productType === "simple" ? stock : 0,
+            stock: productType === "simple" ? stock : undefined,
             variants: productType === "variant" ? variants : [],
             createdBy: req.user._id,
         });
@@ -79,8 +79,8 @@ export const createProduct = async (req, res) => {
                 productType: product.productType,
                 description: product.description,
                 category: product.category,
-                stock: product.stock,
-                variants: product.variants
+                ...(product.productType === "simple" && { stock: product.stock }),
+                ...(product.productType === "variant" && { variants: product.variants })
             }
         })
     } catch (error) {
@@ -101,13 +101,25 @@ export const createProduct = async (req, res) => {
 // get all products
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().select("-__v -createdBy -createdAt -updatedAt");
+        const products = await Product.find()
+        const formattedProducts = products.map(product => ({
+            _id: product._id,
+            productName: product.productName,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            productType: product.productType,
+
+            ...(product.productType === "simple" && { stock: product.stock }),
+            ...(product.productType === "variant" && { variants: product.variants })
+        }));
+
         return res.status(200).json({
             success: true,
             message: "Products fetched successfully.",
-            count: products.length,
-            products
-        })
+            count: formattedProducts.length,
+            products: formattedProducts
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -128,7 +140,7 @@ export const getProductById = async (req, res) => {
             });
         }
 
-        const product = await Product.findById(productId).select("-__v -createdBy -createdAt -updatedAt");
+        const product = await Product.findById(productId)
 
         if (!product) {
             return res.status(404).json({
@@ -137,10 +149,22 @@ export const getProductById = async (req, res) => {
             });
         }
 
+        const formattedProduct = {
+            _id: product._id,
+            productName: product.productName,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            productType: product.productType,
+
+            ...(product.productType === "simple" && { stock: product.stock }),
+            ...(product.productType === "variant" && { variants: product.variants })
+        };
+
         return res.status(200).json({
             success: true,
             message: "Product fetched successfully.",
-            product
+            product: formattedProduct
         });
 
     } catch (error) {
@@ -212,11 +236,23 @@ export const updateProduct = async (req, res) => {
             { new: true, runValidators: true }
         );
 
+        const formattedProduct = {
+            _id: updatedProduct._id,
+            productName: updatedProduct.productName,
+            price: updatedProduct.price,
+            description: updatedProduct.description,
+            category: updatedProduct.category,
+            productType: updatedProduct.productType,
+
+            ...(updatedProduct.productType === "simple" && { stock: updatedProduct.stock }),
+            ...(updatedProduct.productType === "variant" && { variants: updatedProduct.variants })
+        };
+
         return res.status(200).json({
             success: true,
             message: "Product updated successfully.",
-            product: updatedProduct
-        })
+            product: formattedProduct
+        });
 
     } catch (error) {
         return res.status(500).json({
@@ -247,11 +283,23 @@ export const deleteProductById = async (req, res) => {
             })
         }
 
+        const formattedProduct = {
+            _id: product._id,
+            productName: product.productName,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            productType: product.productType,
+
+            ...(product.productType === "simple" && { stock: product.stock }),
+            ...(product.productType === "variant" && { variants: product.variants })
+        };
+
         return res.status(200).json({
             success: true,
             message: "Product deleted successfully.",
-            product
-        })
+            product: formattedProduct
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
