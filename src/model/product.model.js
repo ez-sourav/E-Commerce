@@ -1,5 +1,17 @@
 import mongoose from "mongoose";
 
+const variantsSchema = new mongoose.Schema({
+    attributes:{
+        type:Map,
+        of:String,
+    },
+    stock:{
+        type:Number,
+        required:true,
+        min:0
+    }
+},{_id:false});
+
 const productSchema =  new mongoose.Schema({
     productName:{
         type:String,
@@ -21,11 +33,19 @@ const productSchema =  new mongoose.Schema({
         trim:true,
         index:true
     },
+    productType:{
+        type:String,
+        enum:["simple","variant"],
+        required:true
+    },
     stock:{
         type:Number,
         default:0,
         min:0
     },
+
+    variants:[variantsSchema],
+
     createdBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
