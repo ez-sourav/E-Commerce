@@ -4,20 +4,68 @@ import Product from "../model/product.model.js";
 // create product by admin only
 export const createProduct = async (req, res) => {
     try {
-        const { productName, price, description, category, stock } = req.body;
+        const { productName,
+            price,
+            description,
+            category,
+            productType,
+            stock,
+            variants
+        } = req.body;
 
-        if (!productName || price == null || !category) {
+        if (!productName || price == null || !category || !productType) {
             return res.status(400).json({
                 success: false,
-                message: "Product name, price and category are required."
+                message: "Product name, price, category and productType are required."
             })
         }
+
+        if (!["simple", "variant"].includes(productType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product type"
+            });
+        }
+
+        if (productType === "simple") {
+            if (stock == null) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Stock is required for simple product"
+                });
+            }
+        }
+
+        if (productType === "variant") {
+            if (!variants || variants.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Variants are required for variant product"
+                })
+            }
+        }
+
+        if (productType === "variant") {
+            const invalidVariant = variants.some(
+                v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
+            );
+
+            if (invalidVariant) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Each variant must have stock"
+                });
+            }
+        }
+
         const product = await Product.create({
             productName,
             price,
             description,
             category,
-            stock: stock ?? 0,
+            productType,
+            stock: productType === "simple" ? stock : 0,
+            variants: productType === "variant" ? variants : [],
             createdBy: req.user._id,
         });
 
@@ -28,9 +76,11 @@ export const createProduct = async (req, res) => {
                 _id: product._id,
                 productName: product.productName,
                 price: product.price,
+                productType: product.productType,
                 description: product.description,
                 category: product.category,
-                stock: product.stock
+                stock: product.stock,
+                variants: product.variants
             }
         })
     } catch (error) {
@@ -112,23 +162,60 @@ export const updateProduct = async (req, res) => {
             })
         }
 
-        const product = await Product.findByIdAndUpdate(
-            productId,
-            req.body,
-            { new: true, runValidators: true }
-        );
+        const existingProduct = await Product.findById(productId);
 
-        if (!product) {
+        if (!existingProduct) {
             return res.status(404).json({
                 success: false,
                 message: "Product not found."
             })
         }
 
+        const { productType, stock, variants } = req.body;
+
+        if (productType && !["simple", "variant"].includes(productType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product type"
+            });
+        }
+
+        if (productType === "simple" && stock == null) {
+            return res.status(400).json({
+                success: false,
+                message: "Stock required for simple product"
+            });
+        }
+
+        if (productType === "variant" && variants) {
+            const invalidVariant = variants.some(
+                v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
+            );
+
+            if (invalidVariant) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Each variant must have attributes and stock"
+                });
+            }
+        }
+
+        if (productType === "variant" && (!variants || variants.length === 0)) {
+            return res.status(400).json({
+                success: false,
+                message: "Variants required for variant product"
+            });
+        }
+        const updatedProduct = await Product.findByIdAndUpdate(
+            productId,
+            req.body,
+            { new: true, runValidators: true }
+        );
+
         return res.status(200).json({
             success: true,
             message: "Product updated successfully.",
-            product
+            product: updatedProduct
         })
 
     } catch (error) {
