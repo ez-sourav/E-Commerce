@@ -17,10 +17,28 @@ const router = express.Router();
  *   post:
  *     summary: Create order from cart
  *     tags: [Orders]
+ *     description: Converts user's cart into an order, validates stock, reduces stock, and clears cart.
  *     responses:
  *       201:
  *         description: Order placed successfully
-*/
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Order placed successfully"
+ *               order:
+ *                 _id: "65abc123"
+ *                 user: "64f123abc123"
+ *                 items:
+ *                   - product: "64f123abc123"
+ *                     attributes:
+ *                       size: "M"
+ *                       color: "Black"
+ *                     quantity: 2
+ *                     price: 499
+ *                 totalPrice: 998
+ *                 status: "pending"
+ */
 
 router.post('/',protect,createOrder);
 
@@ -30,9 +48,29 @@ router.post('/',protect,createOrder);
  *   get:
  *     summary: Get my orders
  *     tags: [Orders]
+ *     description: Fetch all orders of the logged-in user
  *     responses:
  *       200:
- *         description: Orders fetched
+ *         description: Orders fetched successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "Orders fetched successfully"
+ *               orders:
+ *                 - _id: "65abc123"
+ *                   items:
+ *                     - product:
+ *                         _id: "64f123abc123"
+ *                         productName: "T-Shirt"
+ *                         price: 499
+ *                       attributes:
+ *                         size: "M"
+ *                         color: "Black"
+ *                       quantity: 2
+ *                       price: 499
+ *                   totalPrice: 998
+ *                   status: "pending"
  */
 
 router.get('/',protect,getMyOrders);

@@ -20,34 +20,43 @@ const router = express.Router();
  *       required: true
  *       content:
  *         application/json:
- *           example:
- *             productId: "64f123abc123"
- *             quantity: 2
+ *           examples:
+ *             simpleProduct:
+ *               summary: Add simple product
+ *               value:
+ *                 productId: "64f123abc123"
+ *                 quantity: 2
+ *             variantProduct:
+ *               summary: Add variant product (size, color)
+ *               value:
+ *                 productId: "64f123abc123"
+ *                 quantity: 1
+ *                 attributes:
+ *                   size: "M"
+ *                   color: "Black"
  *     responses:
  *       201:
  *         description: Added to cart
-*/
-
+ */
 router.post('/',protect,addToCart);
 
 /**
  * @swagger
  * /api/cart:
  *   get:
- *     summary: Get cart
+ *     summary: Get user cart with total price
  *     tags: [Cart]
  *     responses:
  *       200:
- *         description: Cart fetched
+ *         description: Cart fetched successfully
  */
-
 router.get('/',protect,getCart);
 
 /**
  * @swagger
  * /api/cart/{productId}:
  *   delete:
- *     summary: Remove product from cart
+ *     summary: Remove product (or specific variant) from cart
  *     tags: [Cart]
  *     parameters:
  *       - in: path
@@ -55,11 +64,17 @@ router.get('/',protect,getCart);
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           example:
+ *             attributes:
+ *               size: "M"
+ *               color: "Black"
  *     responses:
  *       200:
- *         description: Removed from cart
+ *         description: Product removed from cart
  */
-
 router.delete('/:productId',protect,removeFromCart);
 
 export default router;

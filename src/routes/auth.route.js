@@ -2,8 +2,10 @@ import express from 'express';
 import {
   registerUserController,
   loginUserController,
+  getMe,
   logoutUserController
 } from '../controllers/auth.contoller.js';
+import { protect } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -54,6 +56,34 @@ router.post('/register', registerUserController);
  *         description: Login successful
  */
 router.post('/login', loginUserController);
+
+/**
+ * @swagger
+ * /api/auth/getMe:
+ *   get:
+ *     summary: Get current logged-in user
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: User fetched successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: "User fetched successfully"
+ *               user:
+ *                 name: "Example"
+ *                 email: "example@gmail.com"
+ *       401:
+ *         description: Unauthorized (No token or invalid token)
+ *       500:
+ *         description: Server error
+ */
+
+router.get('/getMe', protect, getMe);
+
 
 /**
  * @swagger

@@ -22,16 +22,37 @@ const router = express.Router();
  *       required: true
  *       content:
  *         application/json:
- *           example:
- *             productName: "iPhone 15"
- *             price: 79999
- *             description: "Latest Apple phone"
- *             category: "Mobile"
- *             stock: 10
+ *           examples:
+ *             simpleProduct:
+ *               summary: Simple Product (Electronics)
+ *               value:
+ *                 productName: "Laptop"
+ *                 price: 50000
+ *                 description: "Dell Laptop"
+ *                 category: "Electronics"
+ *                 productType: "simple"
+ *                 stock: 10
+ *             variantProduct:
+ *               summary: Variant Product (Clothing)
+ *               value:
+ *                 productName: "T-Shirt"
+ *                 price: 499
+ *                 description: "Cotton T-Shirt"
+ *                 category: "Clothing"
+ *                 productType: "variant"
+ *                 variants:
+ *                   - attributes:
+ *                       size: "M"
+ *                       color: "Black"
+ *                     stock: 10
+ *                   - attributes:
+ *                       size: "L"
+ *                       color: "Black"
+ *                     stock: 5
  *     responses:
  *       201:
- *         description: Product created
-*/
+ *         description: Product created successfully
+ */
 router.post('/',protect,isAdmin,createProduct);
 
 /**
@@ -81,13 +102,24 @@ router.get('/:productId',getProductById);
  *     requestBody:
  *       content:
  *         application/json:
- *           example:
- *             price: 75000
- *             stock: 5
+ *           examples:
+ *             updateSimple:
+ *               summary: Update simple product
+ *               value:
+ *                 price: 45000
+ *                 stock: 8
+ *             updateVariant:
+ *               summary: Update variant product
+ *               value:
+ *                 variants:
+ *                   - attributes:
+ *                       size: "M"
+ *                       color: "Red"
+ *                     stock: 12
  *     responses:
  *       200:
- *         description: Product updated
-*/
+ *         description: Product updated successfully
+ */
 router.patch('/:productId',protect,isAdmin, updateProduct);
 
 /**
