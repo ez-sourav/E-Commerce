@@ -13,38 +13,74 @@ export const createOrder = async (req, res) => {
             });
         }
 
+        let totalPrice = 0;
+
+        const orderItems = [];
+
         for (const item of cart.items) {
-            if (item.product.stock < item.quantity) {
-                return res.status(400).json({
-                    success: false,
-                    message: `${item.product.productName} is out of stock`
-                });
+            const product = item.product;
+
+            let availableStock = 0;
+
+            if (product.productType === "simple") {
+                availableStock = product.stock;
+
+                if (availableStock < item.quantity) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `${product.productName} is out of stock`
+                    });
+                }
+
+                product.stock -= item.quantity;
             }
+
+            if (product.productType === "variant") {
+
+                const variant = product.variants.find(v => {
+                    const variantAttrs = Object.fromEntries(v.attributes);
+                    const cartAttrs = Object.fromEntries(item.attributes || {});
+
+                    return Object.keys(variantAttrs).length === Object.keys(cartAttrs).length &&
+                        Object.keys(cartAttrs).every(
+                            key => variantAttrs[key] === cartAttrs[key]
+                        );
+                });
+
+                if (!variant) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Variant not found"
+                    });
+                }
+
+                if (variant.stock < item.quantity) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `${product.productName} variant out of stock`
+                    });
+                }
+
+                variant.stock -= item.quantity;
+            }
+
+            await product.save();
+
+            totalPrice += product.price * item.quantity;
+
+            orderItems.push({
+                product: product._id,
+                attributes: item.attributes || {},
+                quantity: item.quantity,
+                price: product.price
+            });
         }
-
-        const orderItems = cart.items.map(item => ({
-            product: item.product._id,
-            quantity: item.quantity,
-            price: item.product.price
-        }));
-
-        const totalPrice = orderItems.reduce(
-            (acc, item) => acc + item.price * item.quantity,
-            0
-        );
 
         const order = await Order.create({
             user: req.user._id,
             items: orderItems,
             totalPrice
         });
-
-        await Promise.all(
-            cart.items.map(item => {
-                item.product.stock -= item.quantity;
-                return item.product.save();
-            })
-        );
 
         await cart.deleteOne();
 
