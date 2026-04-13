@@ -9,7 +9,7 @@ export const registerUserController = async (req, res) => {
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All field required."
+                message: "All fields are required."
             })
         }
 
@@ -98,6 +98,36 @@ export const loginUserController = async (req, res) => {
     }
 
 }
+
+export const getMe = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: No user found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User fetched successfully",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch user",
+            error: error.message
+        });
+    }
+};
 
 export const logoutUserController = (req, res) => {
     return res.clearCookie('token', {
