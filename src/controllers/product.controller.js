@@ -56,7 +56,7 @@ export const createProduct = async (req, res) => {
             }
         }
 
-        
+
         if (!req.file) {
             return res.status(400).json({
                 success: false,
@@ -77,7 +77,7 @@ export const createProduct = async (req, res) => {
             });
         }
 
-        
+
         if (!result || !result.secure_url) {
             return res.status(500).json({
                 success: false,
@@ -85,7 +85,7 @@ export const createProduct = async (req, res) => {
             });
         }
 
-       
+
         const product = await Product.create({
             productName,
             price,
@@ -218,7 +218,7 @@ export const updateProduct = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Invalid productId"
-            })
+            });
         }
 
         const existingProduct = await Product.findById(productId);
@@ -227,7 +227,7 @@ export const updateProduct = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: "Product not found."
-            })
+            });
         }
 
         if (req.file) {
@@ -236,17 +236,33 @@ export const updateProduct = async (req, res) => {
                 await cloudinary.uploader.destroy(existingProduct.image.public_id);
             }
 
-            // upload new image
-            const result = await cloudinary.uploader.upload(
-                `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-                { folder: "products" }
-            );
+            // upload new image safely
+            let result;
+            try {
+                result = await cloudinary.uploader.upload(
+                    `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+                    { folder: "products" }
+                );
+            } catch (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Image upload failed"
+                });
+            }
+
+            if (!result || !result.secure_url) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Image upload failed"
+                });
+            }
 
             req.body.image = {
                 url: result.secure_url,
                 public_id: result.public_id
             };
         }
+
         const { productType, stock, variants } = req.body;
 
         if (productType && !["simple", "variant"].includes(productType)) {
@@ -263,7 +279,14 @@ export const updateProduct = async (req, res) => {
             });
         }
 
-        if (productType === "variant" && variants) {
+        if (productType === "variant") {
+            if (!variants || variants.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Variants required for variant product"
+                });
+            }
+
             const invalidVariant = variants.some(
                 v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
             );
@@ -276,16 +299,13 @@ export const updateProduct = async (req, res) => {
             }
         }
 
-        if (productType === "variant" && (!variants || variants.length === 0)) {
-            return res.status(400).json({
-                success: false,
-                message: "Variants required for variant product"
-            });
-        }
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
             req.body,
-            { new: true, runValidators: true }
+            {
+                returnDocument: "after",
+                runValidators: true
+            }
         );
 
         const formattedProduct = {
@@ -296,7 +316,6 @@ export const updateProduct = async (req, res) => {
             description: updatedProduct.description,
             category: updatedProduct.category,
             productType: updatedProduct.productType,
-
             ...(updatedProduct.productType === "simple" && { stock: updatedProduct.stock }),
             ...(updatedProduct.productType === "variant" && { variants: updatedProduct.variants })
         };
@@ -311,10 +330,9 @@ export const updateProduct = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: error.message
-        })
+        });
     }
-
-}
+};
 
 export const deleteProductById = async (req, res) => {
     try {
