@@ -121,27 +121,45 @@ router.get('/:productId',getProductById);
  *         schema:
  *           type: string
  *     requestBody:
+ *       required: false
  *       content:
- *         application/json:
- *           examples:
- *             updateSimple:
- *               summary: Update simple product
- *               value:
- *                 price: 45000
- *                 stock: 8
- *             updateVariant:
- *               summary: Update variant product
- *               value:
- *                 variants:
- *                   - attributes:
- *                       size: "M"
- *                       color: "Red"
- *                     stock: 12
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productName:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               productType:
+ *                 type: string
+ *                 enum: [simple, variant]
+ *               stock:
+ *                 type: number
+ *               variants:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     attributes:
+ *                       type: object
+ *                       additionalProperties:
+ *                         type: string
+ *                     stock:
+ *                       type: number
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Upload new image to replace old one
  *     responses:
  *       200:
  *         description: Product updated successfully
  */
-router.patch('/:productId',protect,isAdmin, updateProduct);
+router.patch('/:productId',protect,isAdmin, uploadProductImage, updateProduct);
 
 /**
  * @swagger
