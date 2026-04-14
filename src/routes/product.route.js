@@ -1,6 +1,7 @@
 import express from 'express'
 import { protect,isAdmin, } from '../middlewares/auth.middleware.js';
 import { createProduct,getAllProducts, getProductById,updateProduct, deleteProductById } from '../controllers/product.controller.js';
+import { uploadProductImage } from '../middlewares/uploadImage.middleware.js';
 
 const router = express.Router();
 
@@ -21,39 +22,59 @@ const router = express.Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
- *           examples:
- *             simpleProduct:
- *               summary: Simple Product (Electronics)
- *               value:
- *                 productName: "Laptop"
- *                 price: 50000
- *                 description: "Dell Laptop"
- *                 category: "Electronics"
- *                 productType: "simple"
- *                 stock: 10
- *             variantProduct:
- *               summary: Variant Product (Clothing)
- *               value:
- *                 productName: "T-Shirt"
- *                 price: 499
- *                 description: "Cotton T-Shirt"
- *                 category: "Clothing"
- *                 productType: "variant"
- *                 variants:
- *                   - attributes:
- *                       size: "M"
- *                       color: "Black"
- *                     stock: 10
- *                   - attributes:
- *                       size: "L"
- *                       color: "Black"
- *                     stock: 5
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - productName
+ *               - price
+ *               - category
+ *               - productType
+ *               - image
+ *             properties:
+ *               productName:
+ *                 type: string
+ *                 example: Laptop
+ *               price:
+ *                 type: number
+ *                 example: 50000
+ *               description:
+ *                 type: string
+ *                 example: Dell Laptop
+ *               category:
+ *                 type: string
+ *                 example: Electronics
+ *               productType:
+ *                 type: string
+ *                 enum: [simple, variant]
+ *                 example: simple
+ *               stock:
+ *                 type: number
+ *                 example: 10
+ *               variants:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     attributes:
+ *                       type: object
+ *                       additionalProperties:
+ *                         type: string
+ *                       example:
+ *                         size: M
+ *                         color: Black
+ *                     stock:
+ *                       type: number
+ *                       example: 10
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Product created successfully
  */
-router.post('/',protect,isAdmin,createProduct);
+router.post('/', protect, isAdmin, uploadProductImage, createProduct);
+
 
 /**
  * @swagger
@@ -140,9 +161,5 @@ router.patch('/:productId',protect,isAdmin, updateProduct);
  */
 
 router.delete('/:productId',protect,isAdmin, deleteProductById);
-
-
-
-
 
 export default router;

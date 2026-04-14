@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import Product from "../model/product.model.js";
+import cloudinary from "../utils/cloudinary.js";
 
 // create product by admin only
 export const createProduct = async (req, res) => {
     try {
-        const { productName,
+        const {
+            productName,
             price,
             description,
             category,
@@ -17,7 +19,7 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Product name, price, category and productType are required."
-            })
+            });
         }
 
         if (!["simple", "variant"].includes(productType)) {
@@ -27,13 +29,11 @@ export const createProduct = async (req, res) => {
             });
         }
 
-        if (productType === "simple") {
-            if (stock == null) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Stock is required for simple product"
-                });
-            }
+        if (productType === "simple" && stock == null) {
+            return res.status(400).json({
+                success: false,
+                message: "Stock is required for simple product"
+            });
         }
 
         if (productType === "variant") {
@@ -41,11 +41,9 @@ export const createProduct = async (req, res) => {
                 return res.status(400).json({
                     success: false,
                     message: "Variants are required for variant product"
-                })
+                });
             }
-        }
 
-        if (productType === "variant") {
             const invalidVariant = variants.some(
                 v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
             );
@@ -58,6 +56,36 @@ export const createProduct = async (req, res) => {
             }
         }
 
+        
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Product image is required"
+            });
+        }
+
+        let result;
+        try {
+            result = await cloudinary.uploader.upload(
+                `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+                { folder: "products" }
+            );
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Image upload failed"
+            });
+        }
+
+        
+        if (!result || !result.secure_url) {
+            return res.status(500).json({
+                success: false,
+                message: "Image upload failed"
+            });
+        }
+
+       
         const product = await Product.create({
             productName,
             price,
@@ -66,6 +94,10 @@ export const createProduct = async (req, res) => {
             productType,
             stock: productType === "simple" ? stock : undefined,
             variants: productType === "variant" ? variants : [],
+            image: {
+                url: result.secure_url,
+                public_id: result.public_id
+            },
             createdBy: req.user._id,
         });
 
@@ -75,6 +107,7 @@ export const createProduct = async (req, res) => {
             product: {
                 _id: product._id,
                 productName: product.productName,
+                image: product.image,
                 price: product.price,
                 productType: product.productType,
                 description: product.description,
@@ -82,22 +115,22 @@ export const createProduct = async (req, res) => {
                 ...(product.productType === "simple" && { stock: product.stock }),
                 ...(product.productType === "variant" && { variants: product.variants })
             }
-        })
+        });
+
     } catch (error) {
-        if (error.name == "ValidationError") {
+        if (error.name === "ValidationError") {
             return res.status(400).json({
                 success: false,
                 message: error.message
-            })
+            });
         }
 
         return res.status(500).json({
             success: false,
             message: error.message
-        })
+        });
     }
-}
-
+};
 // get all products
 export const getAllProducts = async (req, res) => {
     try {
@@ -105,6 +138,7 @@ export const getAllProducts = async (req, res) => {
         const formattedProducts = products.map(product => ({
             _id: product._id,
             productName: product.productName,
+            image: product.image,
             price: product.price,
             description: product.description,
             category: product.category,
@@ -152,6 +186,7 @@ export const getProductById = async (req, res) => {
         const formattedProduct = {
             _id: product._id,
             productName: product.productName,
+            image: product.image,
             price: product.price,
             description: product.description,
             category: product.category,
@@ -195,6 +230,23 @@ export const updateProduct = async (req, res) => {
             })
         }
 
+        if (req.file) {
+            // delete old image
+            if (existingProduct.image?.public_id) {
+                await cloudinary.uploader.destroy(existingProduct.image.public_id);
+            }
+
+            // upload new image
+            const result = await cloudinary.uploader.upload(
+                `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+                { folder: "products" }
+            );
+
+            req.body.image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            };
+        }
         const { productType, stock, variants } = req.body;
 
         if (productType && !["simple", "variant"].includes(productType)) {
@@ -239,6 +291,7 @@ export const updateProduct = async (req, res) => {
         const formattedProduct = {
             _id: updatedProduct._id,
             productName: updatedProduct.productName,
+            image: updatedProduct.image,
             price: updatedProduct.price,
             description: updatedProduct.description,
             category: updatedProduct.category,
@@ -274,18 +327,26 @@ export const deleteProductById = async (req, res) => {
             })
         }
 
-        const product = await Product.findByIdAndDelete(productId);
+        const product = await Product.findById(productId);
 
         if (!product) {
             return res.status(404).json({
                 success: false,
                 message: "Product not found."
-            })
+            });
         }
+
+        // delete image from cloudinary
+        if (product.image?.public_id) {
+            await cloudinary.uploader.destroy(product.image.public_id);
+        }
+
+        await Product.findByIdAndDelete(productId);
 
         const formattedProduct = {
             _id: product._id,
             productName: product.productName,
+            image: product.image,
             price: product.price,
             description: product.description,
             category: product.category,
