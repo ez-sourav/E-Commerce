@@ -15,6 +15,21 @@ export const createProduct = async (req, res) => {
             variants
         } = req.body;
 
+        
+        let parsedVariants = variants;
+
+        if (productType === "variant" && typeof variants === "string") {
+            try {
+                parsedVariants = JSON.parse(variants);
+            } catch (error) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid variants format"
+                });
+            }
+        }
+
+        
         if (!productName || price == null || !category || !productType) {
             return res.status(400).json({
                 success: false,
@@ -37,15 +52,18 @@ export const createProduct = async (req, res) => {
         }
 
         if (productType === "variant") {
-            if (!variants || variants.length === 0) {
+            if (!parsedVariants || !Array.isArray(parsedVariants) || parsedVariants.length === 0) {
                 return res.status(400).json({
                     success: false,
                     message: "Variants are required for variant product"
                 });
             }
 
-            const invalidVariant = variants.some(
-                v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
+            const invalidVariant = parsedVariants.some(
+                v =>
+                    !v.attributes ||
+                    Object.keys(v.attributes).length === 0 ||
+                    v.stock == null
             );
 
             if (invalidVariant) {
@@ -77,7 +95,6 @@ export const createProduct = async (req, res) => {
             });
         }
 
-
         if (!result || !result.secure_url) {
             return res.status(500).json({
                 success: false,
@@ -85,15 +102,14 @@ export const createProduct = async (req, res) => {
             });
         }
 
-
         const product = await Product.create({
             productName,
-            price,
+            price: Number(price),
             description,
             category,
             productType,
-            stock: productType === "simple" ? stock : undefined,
-            variants: productType === "variant" ? variants : [],
+            stock: productType === "simple" ? Number(stock) : undefined,
+            variants: productType === "variant" ? parsedVariants : [],
             image: {
                 url: result.secure_url,
                 public_id: result.public_id
