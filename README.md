@@ -107,10 +107,21 @@ npm run dev
 
 Interactive API documentation is available using Swagger UI.
 
-### 🔗 Access Swagger
+### 🔗 Access Swagger API Docs
+
+#### 🧑‍💻 Local Development
+
 ```
 http://localhost:3000/api-docs
 ```
+
+#### 🌐 Production (Live Server)
+
+```
+https://e-commerce-3h1k.onrender.com/api-docs
+```
+
+> ⚡ Tip: The Swagger `servers` is configured as `/`, so it automatically works for both local and production environments.
 
 ### ✅ Features
 
