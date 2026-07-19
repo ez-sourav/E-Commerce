@@ -121,7 +121,7 @@ const Navbar = () => {
               className="rounded-full p-2.5 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
               aria-label="Wishlist"
             >
-              <Heart size={20} />
+              <Heart size={21} />
             </NavLink>
 
             <NavLink
@@ -129,7 +129,7 @@ const Navbar = () => {
               className="relative rounded-full p-2.5 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
               aria-label={`Cart, ${CART_COUNT} items`}
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={21} />
               <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0A3D91] text-[10px] font-bold text-white">
                 {CART_COUNT}
               </span>
@@ -140,7 +140,7 @@ const Navbar = () => {
               className="rounded-full p-2.5 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
               aria-label="Account"
             >
-              <User size={20} />
+              <User size={21} />
             </NavLink>
           </div>
         </div>
