@@ -1,11 +1,9 @@
 import './App.css'
-
+import AppRouters from './routers/AppRouter.jsx'
 function App() {
 
   return (
-   <div className='bg-gray-800 h-screen text-white text-2xl'>
-    <h1>Hello</h1>
-   </div>
+  <AppRouters/>
   )
 }
 
