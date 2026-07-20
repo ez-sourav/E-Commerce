@@ -30,12 +30,12 @@ const trustItems = [
 const Hero = () => {
     return (
 
-        <section className="relative overflow-hidden bg-white">
+        <section className="relative overflow-hiddenbg-gradient-to-b from-white to-gray-50">
             {/* Background Blur */}
             <div className="absolute -top-24 right-0 h-56 w-56 rounded-full bg-blue-100 blur-3xl opacity-40 sm:h-80 sm:w-80 lg:-top-40 lg:h-125 lg:w-125"></div>
             <div className="absolute -bottom-20 left-0 h-48 w-48 rounded-full bg-gray-100 blur-3xl opacity-50 sm:h-64 sm:w-64 lg:-bottom-32 lg:h-87.5 lg:w-87.5"></div>
 
-            <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-4 px-4 py-10 sm:px-6 sm:py-16 lg:min-h-[80vh] lg:grid-cols-2 lg:gap-14 lg:py-16">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-4 px-4 py-10 sm:px-6 sm:py-16 lg:min-h-[80vh] lg:grid-cols-2 lg:gap-14 lg:py-12">
 
                 {/* Left side */}
                 <div className="relative z-10 order-2 text-center lg:order-1 lg:text-left">
