@@ -47,7 +47,7 @@ const FeaturedCategories = () => {
   return (
     <section className="bg-white py-8 sm:py-8 md:py-5">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center sm:mb-12 md:mb-16">
+        <div className="mb-10 text-center sm:mb-12 md:mb-10">
           <h2 className="text-2xl font-bold text-gray-900 xs:text-3xl sm:text-4xl md:text-5xl">
             Shop by Category
           </h2>
