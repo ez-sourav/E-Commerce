@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouters from './routes/auth.route.js'
 import testRoutes from "./routes/test.route.js";
@@ -9,9 +10,17 @@ import orderRoutes from './routes/order.route.js';
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./utils/swagger.js";
 
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
