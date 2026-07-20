@@ -7,7 +7,7 @@ const MainLayout = () => {
     return (
         <>
             <Navbar />
-            <main>
+            <main className='pb-12 lg:pb-0'>
                 <Outlet />
             </main>
             <Footer />
