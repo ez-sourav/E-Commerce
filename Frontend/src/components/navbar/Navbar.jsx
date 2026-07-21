@@ -15,14 +15,12 @@ const DESKTOP_LINKS = [
   { to: "/", label: "Home", end: true },
   { to: "/shop", label: "Shop" },
   { to: "/collections", label: "Collections" },
-  // { to: "/new-arrivals", label: "New Arrivals" },
 ];
 
 const BOTTOM_TABS = [
   { to: "/", label: "Home", icon: HomeIcon, end: true },
   { to: "/shop", label: "Shop", icon: ShoppingBag },
   { to: "/wishlist", label: "Wishlist", icon: Heart },
-  // { to: "/cart", label: "Cart", icon: ShoppingCart, badge: 2 },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
@@ -49,8 +47,8 @@ const Logo = ({ compact = false }) => (
 
 const desktopLinkClass = ({ isActive }) =>
   `relative px-1 py-2 text-[15px]  transition-colors ${isActive
-    ? "text-[#0A3D91] after:absolute font-bold after:-bottom-[1px] after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-[#0A3D91]"
-    : "text-black hover:text-gray-900 "
+    ? "text-[#0A3D91] after:absolute font-extrabold after:-bottom-[1px] after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-[#0A3D91]"
+    : "text-black hover:text-gray-900 font-medium"
   }`;
 
 
@@ -140,7 +138,7 @@ const Navbar = () => {
               className="rounded-full p-2.5 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
               aria-label="Account"
             >
-              <User size={21} />
+              <User size={22} />
             </NavLink>
           </div>
         </div>
@@ -155,19 +153,6 @@ const Navbar = () => {
           <Logo />
 
           <div className="flex items-center gap-1">
-            {/* <button
-              onClick={focusMobileSearch}
-              className="rounded-full p-2 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
-              aria-label="Search"
-            >
-              <Search size={21} />
-            </button> */}
-            {/* <button
-              className="rounded-full p-2 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
-              aria-label="Wishlist"
-            >
-              <Heart size={21} />
-            </button> */}
             <NavLink
               to="/cart"
               className="relative rounded-full p-2 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
@@ -211,7 +196,7 @@ const Navbar = () => {
               to={to}
               end={end}
               className={({ isActive }) =>
-                `flex flex-1 flex-col items-center justify-center gap-1  py-2.5  text-[11px]  transition-colors ${isActive ? "text-[#0A3D91] font-bold" : "text-gray-500 hover:text-[#0A3D91] font-medium "
+                `flex flex-1 flex-col items-center justify-center gap-1  py-2.5  text-[11px]  transition-colors ${isActive ? "text-[#0A3D91] font-extrabold" : "text-gray-500 hover:text-[#0A3D91] font-semibold "
                 }`
               }
             >
