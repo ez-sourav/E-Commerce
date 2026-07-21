@@ -38,7 +38,7 @@ const Logo = ({ compact = false }) => (
     />
 
     {!compact && (
-      <span className="text-lg font-bold tracking-tight leading-none text-[#0A3D91] sm:text-2xl lg:text-[28px]">
+      <span className="text-2xl font-bold tracking-tight leading-none text-[#0A3D91] sm:text-2xl lg:text-[28px]">
         Trendify
       </span>
     )}
