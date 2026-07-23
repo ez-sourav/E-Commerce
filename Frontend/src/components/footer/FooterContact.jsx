@@ -4,12 +4,11 @@ import { contactInfo } from "./footerData";
 const FooterContact = () => {
   return (
     <div className="text-center sm:text-left">
-      <h3 className="mb-5 text-sm font-semibold uppercase tracking-wider text-gray-900">
+      <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-gray-900">
         Contact
       </h3>
-
       <ul className="space-y-4">
-        <li className="flex items-center justify-center gap-3 sm:justify-start">
+        <li className="flex items-center text-sm font-semibold justify-center gap-3 sm:justify-start">
           <Mail
             size={18}
             className="shrink-0 text-[#0A3D91]"
@@ -23,7 +22,7 @@ const FooterContact = () => {
           </a>
         </li>
 
-        <li className="flex items-center justify-center gap-3 sm:justify-start">
+        <li className="flex items-center text-sm font-semibold justify-center gap-3 sm:justify-start">
           <MapPin
             size={18}
             className="shrink-0 text-[#0A3D91]"

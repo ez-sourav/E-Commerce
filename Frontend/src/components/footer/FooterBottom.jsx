@@ -7,26 +7,25 @@ const FooterBottom = () => {
             behavior: "smooth",
         });
     };
-
     return (
         <div className="mt-8 border-t border-gray-200 pt-4">
-            <div className="flex flex-col gap-5 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <div className="flex flex-col  gap-5 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
                 {/* Left */}
                 <div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm  text-gray-500">
                         © {new Date().getFullYear()} Trendify. All rights reserved.
                     </p>
 
                     <p className="mt-1 text-sm text-gray-500">
                         Designed & Developed by{" "}
-                        <span className="font-medium text-[#0A3D91]">
+                        <span className="font-bold text-[#0A3D91]">
                             Sourav Biswas
                         </span>
                     </p>
                 </div>
 
                 <div className="flex flex-col items-center gap-3 sm:flex-row">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-500">
                         <ShieldCheck size={16} className="text-[#0A3D91]" />
                         <span>Secure Payments Powered by Stripe.</span>
                     </div>
