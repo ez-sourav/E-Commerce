@@ -15,9 +15,9 @@ export const createProduct = async (req, res) => {
             variants
         } = req.body;
 
-        
         let parsedVariants = variants;
 
+        // Parse variants if sent as JSON string
         if (productType === "variant" && typeof variants === "string") {
             try {
                 parsedVariants = JSON.parse(variants);
@@ -29,79 +29,113 @@ export const createProduct = async (req, res) => {
             }
         }
 
-        
+        // Basic validation
         if (!productName || price == null || !category || !productType) {
             return res.status(400).json({
                 success: false,
-                message: "Product name, price, category and productType are required."
+                message: "Product name, price, category and product type are required."
             });
         }
 
         if (!["simple", "variant"].includes(productType)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid product type"
+                message: "Invalid product type."
             });
         }
 
-        if (productType === "simple" && stock == null) {
-            return res.status(400).json({
-                success: false,
-                message: "Stock is required for simple product"
-            });
-        }
-
-        if (productType === "variant") {
-            if (!parsedVariants || !Array.isArray(parsedVariants) || parsedVariants.length === 0) {
+        // Simple product validation
+        if (productType === "simple") {
+            if (stock == null) {
                 return res.status(400).json({
                     success: false,
-                    message: "Variants are required for variant product"
+                    message: "Stock is required for simple product."
                 });
             }
 
-            const invalidVariant = parsedVariants.some(
-                v =>
-                    !v.attributes ||
-                    Object.keys(v.attributes).length === 0 ||
-                    v.stock == null
-            );
+            if (Number(stock) < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Stock cannot be negative."
+                });
+            }
+        }
+
+        // Variant product validation
+        if (productType === "variant") {
+            if (
+                !parsedVariants ||
+                !Array.isArray(parsedVariants) ||
+                parsedVariants.length === 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Variants are required for variant product."
+                });
+            }
+
+            const invalidVariant = parsedVariants.some((variant) => {
+                return (
+                    !variant.attributes ||
+                    Object.keys(variant.attributes).length === 0 ||
+                    variant.price == null ||
+                    Number(variant.price) < 0 ||
+                    variant.stock == null ||
+                    Number(variant.stock) < 0
+                );
+            });
 
             if (invalidVariant) {
                 return res.status(400).json({
                     success: false,
-                    message: "Each variant must have attributes and stock"
+                    message:
+                        "Each variant must have attributes, price and stock."
                 });
             }
+
+            // Convert values to proper numbers
+            parsedVariants = parsedVariants.map((variant) => ({
+                attributes: variant.attributes,
+                price: Number(variant.price),
+                stock: Number(variant.stock)
+            }));
         }
 
-
+        // Image validation
         if (!req.file) {
             return res.status(400).json({
                 success: false,
-                message: "Product image is required"
+                message: "Product image is required."
             });
         }
 
+        // Upload image
         let result;
+
         try {
             result = await cloudinary.uploader.upload(
-                `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-                { folder: "products" }
+                `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+                    "base64"
+                )}`,
+                {
+                    folder: "products"
+                }
             );
-        } catch (err) {
+        } catch (error) {
             return res.status(500).json({
                 success: false,
-                message: "Image upload failed"
+                message: "Image upload failed."
             });
         }
 
-        if (!result || !result.secure_url) {
+        if (!result?.secure_url) {
             return res.status(500).json({
                 success: false,
-                message: "Image upload failed"
+                message: "Image upload failed."
             });
         }
 
+        // Create product
         const product = await Product.create({
             productName,
             price: Number(price),
@@ -114,7 +148,7 @@ export const createProduct = async (req, res) => {
                 url: result.secure_url,
                 public_id: result.public_id
             },
-            createdBy: req.user._id,
+            createdBy: req.user._id
         });
 
         return res.status(201).json({
@@ -125,15 +159,20 @@ export const createProduct = async (req, res) => {
                 productName: product.productName,
                 image: product.image,
                 price: product.price,
-                productType: product.productType,
                 description: product.description,
                 category: product.category,
-                ...(product.productType === "simple" && { stock: product.stock }),
-                ...(product.productType === "variant" && { variants: product.variants })
+                productType: product.productType,
+                ...(product.productType === "simple" && {
+                    stock: product.stock
+                }),
+                ...(product.productType === "variant" && {
+                    variants: product.variants
+                })
             }
         });
 
     } catch (error) {
+
         if (error.name === "ValidationError") {
             return res.status(400).json({
                 success: false,
@@ -233,7 +272,7 @@ export const updateProduct = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid productId"
+                message: "Invalid product ID"
             });
         }
 
@@ -246,30 +285,33 @@ export const updateProduct = async (req, res) => {
             });
         }
 
+        // Upload new image if provided
         if (req.file) {
-            // delete old image
+            // Delete old image
             if (existingProduct.image?.public_id) {
                 await cloudinary.uploader.destroy(existingProduct.image.public_id);
             }
 
-            // upload new image safely
             let result;
+
             try {
                 result = await cloudinary.uploader.upload(
                     `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-                    { folder: "products" }
+                    {
+                        folder: "products"
+                    }
                 );
-            } catch (err) {
+            } catch (error) {
                 return res.status(500).json({
                     success: false,
-                    message: "Image upload failed"
+                    message: "Image upload failed."
                 });
             }
 
-            if (!result || !result.secure_url) {
+            if (!result?.secure_url) {
                 return res.status(500).json({
                     success: false,
-                    message: "Image upload failed"
+                    message: "Image upload failed."
                 });
             }
 
@@ -279,47 +321,112 @@ export const updateProduct = async (req, res) => {
             };
         }
 
-        const { productType, stock, variants } = req.body;
+        let { productType, stock, variants } = req.body;
 
-        if (productType && !["simple", "variant"].includes(productType)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid product type"
-            });
-        }
+        // If productType is not sent, use existing product type
+        productType = productType || existingProduct.productType;
 
-        if (productType === "simple" && stock == null) {
-            return res.status(400).json({
-                success: false,
-                message: "Stock required for simple product"
-            });
-        }
+        let parsedVariants = variants;
 
-        if (productType === "variant") {
-            if (!variants || variants.length === 0) {
+        // Parse variants if sent as JSON string
+        if (productType === "variant" && typeof variants === "string") {
+            try {
+                parsedVariants = JSON.parse(variants);
+            } catch (error) {
                 return res.status(400).json({
                     success: false,
-                    message: "Variants required for variant product"
+                    message: "Invalid variants format"
+                });
+            }
+        }
+
+        // Validate product type
+        if (!["simple", "variant"].includes(productType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product type."
+            });
+        }
+
+        // Convert product price if present
+        if (req.body.price != null) {
+            req.body.price = Number(req.body.price);
+
+            if (req.body.price < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Price cannot be negative."
+                });
+            }
+        }
+
+        // Simple Product Validation
+        if (productType === "simple") {
+
+            if (stock == null) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Stock is required for simple product."
                 });
             }
 
-            const invalidVariant = variants.some(
-                v => !v.attributes || Object.keys(v.attributes).length === 0 || v.stock == null
-            );
+            req.body.stock = Number(stock);
+
+            if (req.body.stock < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Stock cannot be negative."
+                });
+            }
+
+            // Remove variants if switching to simple
+            req.body.variants = [];
+        }
+
+        // Variant Product Validation
+        if (productType === "variant") {
+
+            if (
+                !parsedVariants ||
+                !Array.isArray(parsedVariants) ||
+                parsedVariants.length === 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Variants are required for variant product."
+                });
+            }
+
+            const invalidVariant = parsedVariants.some((variant) => (
+                !variant.attributes ||
+                Object.keys(variant.attributes).length === 0 ||
+                variant.price == null ||
+                Number(variant.price) < 0 ||
+                variant.stock == null ||
+                Number(variant.stock) < 0
+            ));
 
             if (invalidVariant) {
                 return res.status(400).json({
                     success: false,
-                    message: "Each variant must have attributes and stock"
+                    message: "Each variant must have attributes, price and stock."
                 });
             }
+
+            req.body.stock = 0;
+
+            req.body.variants = parsedVariants.map((variant) => ({
+                attributes: variant.attributes,
+                price: Number(variant.price),
+                stock: Number(variant.stock)
+            }));
         }
 
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
             req.body,
             {
-                returnDocument: "after",
+                new: true,
                 runValidators: true
             }
         );
@@ -332,8 +439,14 @@ export const updateProduct = async (req, res) => {
             description: updatedProduct.description,
             category: updatedProduct.category,
             productType: updatedProduct.productType,
-            ...(updatedProduct.productType === "simple" && { stock: updatedProduct.stock }),
-            ...(updatedProduct.productType === "variant" && { variants: updatedProduct.variants })
+
+            ...(updatedProduct.productType === "simple" && {
+                stock: updatedProduct.stock
+            }),
+
+            ...(updatedProduct.productType === "variant" && {
+                variants: updatedProduct.variants
+            })
         };
 
         return res.status(200).json({
@@ -343,6 +456,14 @@ export const updateProduct = async (req, res) => {
         });
 
     } catch (error) {
+
+        if (error.name === "ValidationError") {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+
         return res.status(500).json({
             success: false,
             message: error.message
