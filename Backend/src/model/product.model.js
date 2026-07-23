@@ -1,67 +1,76 @@
 import mongoose from "mongoose";
 
 const variantsSchema = new mongoose.Schema({
-    attributes:{
-        type:Map,
-        of:String,
+    attributes: {
+        type: Map,
+        of: String,
+        required: true,
     },
-    stock:{
-        type:Number,
-        required:true,
-        min:0
+    price: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0
     }
-},{_id:false});
+}, { _id: false });
 
-const productSchema =  new mongoose.Schema({
-    productName:{
-        type:String,
-        required:true,
-        trim:true
+const productSchema = new mongoose.Schema({
+    productName: {
+        type: String,
+        required: true,
+        trim: true
     },
-    price:{
-        type:Number,
-        required:true,
-        min:0
+    price: {
+        type: Number,
+        required: true,
+        min: 0
     },
-    description:{
-        type:String,
-        trim:true
+    description: {
+        type: String,
+        trim: true
     },
-    image:{
-        url:{
-            type:String,
-            required:true,
+    image: {
+        url: {
+            type: String,
+            required: true,
         },
-        public_id:{
-            type:String,
-            required:true,
+        public_id: {
+            type: String,
+            required: true,
         }
     },
-    category:{
-        type:String,
-        required:true,
-        trim:true,
-        index:true
+    category: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
     },
-    productType:{
-        type:String,
-        enum:["simple","variant"],
-        required:true
+    productType: {
+        type: String,
+        enum: ["simple", "variant"],
+        required: true
     },
-    stock:{
-        type:Number,
-        default:0,
-        min:0
+    stock: {
+        type: Number,
+        default: 0,
+        min: 0
     },
 
-    variants:[variantsSchema],
+    variants: {
+        type: [variantsSchema],
+        default: [],
+    },
 
-    createdBy:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     }
-},{timestamps:true})
+}, { timestamps: true })
 
-const Product = mongoose.model('Product',productSchema);
+const Product = mongoose.model('Product', productSchema);
 export default Product;
