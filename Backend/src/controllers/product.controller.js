@@ -108,7 +108,7 @@ export const createProduct = async (req, res) => {
             description,
             category,
             productType,
-            stock: productType === "simple" ? Number(stock) : undefined,
+            stock: productType === "simple" ? Number(stock) : 0,
             variants: productType === "variant" ? parsedVariants : [],
             image: {
                 url: result.secure_url,
