@@ -60,10 +60,10 @@ const ProductCard = ({
       transition={{ duration: 0.25 }}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-xl sm:rounded-2xl"
     >
-      <Link to={`/products/${_id}`} className="flex h-full flex-col">
+      <Link to={`/product/${_id}`} className="flex h-full flex-col">
         {/* Product Image */}
         <div className="relative overflow-hidden bg-gray-100">
-          <div className="aspect-[4/5] overflow-hidden">
+          <div className="aspect-4/5 overflow-hidden">
             <motion.img
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
@@ -115,12 +115,12 @@ const ProductCard = ({
           </p>
 
           {/* Product Name */}
-          <h3 className="line-clamp-2 min-h-[32px] text-xs font-semibold leading-tight text-gray-900 transition-colors group-hover:text-[#0A3D91] xs:min-h-[36px] xs:text-sm sm:min-h-[56px] sm:text-lg">
+          <h3 className="line-clamp-2 min-h-8 text-xs font-semibold leading-tight text-gray-900 transition-colors group-hover:text-[#0A3D91] xs:min-h-[36px] xs:text-sm sm:min-h-14 sm:text-lg">
             {productName}
           </h3>
 
           {/* Product Description */}
-          <p className="line-clamp-1 min-h-[14px] text-[11px] text-gray-500 xs:text-xs sm:min-h-[20px] sm:text-sm">
+          <p className="line-clamp-1 min-h-3.5 text-[11px] text-gray-500 xs:text-xs sm:min-h-5 sm:text-sm">
             {description}
           </p>
 
