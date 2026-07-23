@@ -6,8 +6,10 @@ import {
   ShoppingCart,
   User,
   Home as HomeIcon,
+  X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import useProductSearch from "../../hooks/useProductSearch";
 
 /* ---------- Shared brand bits ---------- */
 
@@ -55,7 +57,12 @@ const desktopLinkClass = ({ isActive }) =>
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const searchInputRef = useRef(null);
-
+  const {
+    search,
+    setSearch,
+    handleSearch,
+    handleKeyDown,
+  } = useProductSearch();
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 4);
     onScroll();
@@ -93,17 +100,36 @@ const Navbar = () => {
 
           {/* Right: search + icons */}
           <div className="flex items-center gap-2 lg:gap-3">
-            <label className="relative hidden lg:block w-80  xl:w-125">
+            <label className="relative hidden w-80 lg:block xl:w-125">
               <span className="sr-only">Search products</span>
-              <Search
-                size={17}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-              />
+
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#0A3D91]"
+              >
+                <Search size={17} />
+              </button>
+
               <input
                 type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Search for Products and More"
-                className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-11 pr-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#0A3D91] focus:bg-white"
+                className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-11 pr-11 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#0A3D91] focus:bg-white"
               />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-900 transition hover:text-gray-700"
+                  aria-label="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </label>
 
             <NavLink
@@ -170,16 +196,35 @@ const Navbar = () => {
         <div className="px-4 pb-3 sm:px-5">
           <label className="relative block">
             <span className="sr-only">Search products</span>
-            <Search
-              size={18}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-900"
-            />
+
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-900 hover:text-[#0A3D91]"
+            >
+              <Search size={18} />
+            </button>
+
             <input
               ref={searchInputRef}
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Search for Products and More"
-              className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-11 pr-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-900  focus:border-[#0A3D91] focus:bg-white "
+              className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-11 pr-11 text-sm text-gray-800 outline-none transition placeholder:text-gray-900 focus:border-[#0A3D91] focus:bg-white"
             />
+
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-900 transition hover:text-gray-700"
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
           </label>
         </div>
       </header>
