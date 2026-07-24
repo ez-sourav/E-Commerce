@@ -2,12 +2,11 @@ import { useEffect, useMemo } from "react";
 
 const VariantSelector = ({
   variants = [],
-  selectedVariant,
   setSelectedVariant,
   selectedAttributes,
   setSelectedAttributes,
 }) => {
-  // Group attribute values
+  // Group all attribute values
   const attributeGroups = useMemo(() => {
     const groups = {};
 
@@ -16,16 +15,12 @@ const VariantSelector = ({
         if (!groups[key]) {
           groups[key] = new Set();
         }
-
         groups[key].add(value);
       });
     });
 
     return Object.fromEntries(
-      Object.entries(groups).map(([key, values]) => [
-        key,
-        [...values],
-      ])
+      Object.entries(groups).map(([key, values]) => [key, [...values]])
     );
   }, [variants]);
 
@@ -50,6 +45,8 @@ const VariantSelector = ({
 
     if (matched) {
       setSelectedVariant(matched);
+    } else {
+      setSelectedVariant(null);
     }
   }, [
     variants,
@@ -83,34 +80,41 @@ const VariantSelector = ({
               const isSelected =
                 selectedAttributes[attribute] === value;
 
-              // Check if this option exists in stock
-              const hasStock = variants.some(
+              // Check if selecting this value creates a valid combination
+              const nextSelection = {
+                ...selectedAttributes,
+                [attribute]: value,
+              };
+
+              const matchedVariant = variants.find(
                 (variant) =>
-                  variant.attributes[attribute] === value &&
-                  variant.stock > 0
+                  variant.stock > 0 &&
+                  Object.entries(nextSelection).every(
+                    ([key, val]) => variant.attributes[key] === val
+                  )
               );
+
+              const isAvailable = !!matchedVariant;
 
               return (
                 <button
                   key={value}
                   type="button"
-                  disabled={!hasStock}
-                  onClick={() =>
-                    setSelectedAttributes((prev) => ({
-                      ...prev,
-                      [attribute]: value,
-                    }))
-                  }
-                  className={`rounded-full border px-4 py-2 text-sm font-medium transition
-                    ${
-                      isSelected
-                        ? "border-indigo-600 bg-indigo-600 text-white"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
+                  disabled={!isAvailable}
+                  onClick={() => {
+                    if (!matchedVariant) return;
+
+                    setSelectedAttributes(nextSelection);
+                    setSelectedVariant(matchedVariant);
+                  }}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition-all
+                    ${isSelected
+                      ? "border-indigo-600 bg-indigo-600 text-white"
+                      : "border-gray-300 bg-white text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
                     }
-                    ${
-                      !hasStock
-                        ? "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400 line-through"
-                        : ""
+                    ${!isAvailable
+                      ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-50"
+                      : ""
                     }`}
                 >
                   {value}

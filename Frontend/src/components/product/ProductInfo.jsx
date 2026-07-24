@@ -150,7 +150,6 @@ const ProductInfo = ({ product }) => {
         <div className="mb-6">
           <VariantSelector
             variants={variants}
-            selectedVariant={selectedVariant}
             setSelectedVariant={setSelectedVariant}
             selectedAttributes={selectedAttributes}
             setSelectedAttributes={setSelectedAttributes}
