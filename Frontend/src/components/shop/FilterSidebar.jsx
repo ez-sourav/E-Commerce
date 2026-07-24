@@ -39,7 +39,7 @@ const FilterSidebar = ({
 
       <div className="flex-1 overflow-y-auto px-4 lg:px-5 xl:px-6">
       
-        <div className="border-b border-gray-100 py-5 lg:py-6">
+        <div className="border-b border-gray-100 py-4 lg:py-4">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 lg:mb-4">
             Categories
           </h3>
@@ -79,7 +79,7 @@ const FilterSidebar = ({
           </div>
         </div>
 
-        <div className="border-b border-gray-100 py-5 lg:py-6">
+        <div className="border-b border-gray-100 py-4 lg:py-4">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 lg:mb-4">
             Maximum Price
           </h3>
@@ -107,8 +107,7 @@ const FilterSidebar = ({
           </p>
         </div>
 
-        {/* Availability */}
-        <div className="py-5 lg:py-6">
+        <div className="py-5 lg:py-5">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 lg:mb-4">
             Availability
           </h3>
