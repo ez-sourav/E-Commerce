@@ -59,18 +59,18 @@ const VariantSelector = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-sm font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-900">
         Select Options
       </h2>
 
       {Object.entries(attributeGroups).map(([attribute, values]) => (
         <div key={attribute}>
           <div className="mb-2 flex items-center gap-2">
-            <span className="text-sm font-medium capitalize text-gray-700">
-              {attribute}
+            <span className="text-sm font-bold capitalize text-gray-800">
+              {attribute} :
             </span>
 
-            <span className="text-sm text-gray-500">
+            <span className="text-sm font-medium text-gray-700">
               {selectedAttributes[attribute]}
             </span>
           </div>
@@ -107,13 +107,13 @@ const VariantSelector = ({
                     setSelectedAttributes(nextSelection);
                     setSelectedVariant(matchedVariant);
                   }}
-                  className={`rounded-full border px-4 py-2 text-sm font-medium transition-all
+                  className={`rounded-full border px-4 py-2 text-sm font-medium hover:cursor-pointer transition-all
                     ${isSelected
                       ? "border-indigo-600 bg-indigo-600 text-white"
                       : "border-gray-300 bg-white text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
                     }
                     ${!isAvailable
-                      ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-50"
+                      ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-50 "
                       : ""
                     }`}
                 >
