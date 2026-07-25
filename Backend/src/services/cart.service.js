@@ -224,6 +224,8 @@ export const addItemToCart = async (userId, data) => {
         totalPrice
     };
 };
+
+
 export const getUserCart = async (userId) => {
 
     const cart = await Cart.findOne({ user: userId }).populate(
@@ -252,6 +254,8 @@ export const getUserCart = async (userId) => {
     };
 
 };
+
+
 export const removeCartItem = async (userId, productId, attributes = {}) => {
 
     const cart = await Cart.findOne({ user: userId });
@@ -311,6 +315,111 @@ export const removeCartItem = async (userId, productId, attributes = {}) => {
         status: 200,
         success: true,
         message: "Product removed successfully",
+        cart: transformedCart,
+        totalPrice
+    };
+
+};
+
+export const updateCartQuantity = async (userId, data) => {
+
+    const { productId, quantity, attributes = {} } = data;
+
+    const qty = Number(quantity);
+
+    if (!qty || qty < 1) {
+        return {
+            status: 400,
+            success: false,
+            message: "Invalid quantity"
+        };
+    }
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+        return {
+            status: 404,
+            success: false,
+            message: "Cart not found"
+        };
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return {
+            status: 404,
+            success: false,
+            message: "Product not found"
+        };
+    }
+
+    let availableStock = 0;
+
+    if (product.productType === "simple") {
+
+        availableStock = product.stock;
+
+    } else {
+
+        const variant = findVariant(product, attributes);
+
+        if (!variant) {
+            return {
+                status: 400,
+                success: false,
+                message: "Invalid variant selected"
+            };
+        }
+
+        availableStock = variant.stock;
+
+    }
+
+    const cartItem = cart.items.find(item => {
+
+        const sameProduct =
+            item.product.toString() === productId;
+
+        const sameAttributes =
+            compareAttributes(item.attributes, attributes);
+
+        return sameProduct && sameAttributes;
+
+    });
+
+    if (!cartItem) {
+        return {
+            status: 404,
+            success: false,
+            message: "Product not found in cart"
+        };
+    }
+
+    if (qty > availableStock) {
+        return {
+            status: 400,
+            success: false,
+            message: "Exceeds available stock"
+        };
+    }
+
+    cartItem.quantity = qty;
+
+    await cart.save();
+
+    await cart.populate(
+        "items.product",
+        "productName price category image productType variants"
+    );
+
+    const { cart: transformedCart, totalPrice } = transformCart(cart);
+
+    return {
+        status: 200,
+        success: true,
+        message: "Cart updated successfully",
         cart: transformedCart,
         totalPrice
     };
