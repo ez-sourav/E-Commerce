@@ -1,6 +1,6 @@
 import express from 'express';
 import {protect} from '../middlewares/auth.middleware.js'
-import { addToCart, getCart, removeFromCart } from '../controllers/cart.controller.js';
+import { addToCart, getCart, removeFromCart, updateCart} from '../controllers/cart.controller.js';
 const router = express.Router();
 
 /**
@@ -76,5 +76,37 @@ router.get('/',protect,getCart);
  *         description: Product removed from cart
  */
 router.delete('/:productId',protect,removeFromCart);
-
+/**
+ * @swagger
+ * /api/cart:
+ *   patch:
+ *     summary: Update quantity of a cart item
+ *     tags: [Cart]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           examples:
+ *             simpleProduct:
+ *               summary: Update simple product quantity
+ *               value:
+ *                 productId: "64f123abc123"
+ *                 quantity: 4
+ *             variantProduct:
+ *               summary: Update variant product quantity
+ *               value:
+ *                 productId: "64f123abc123"
+ *                 quantity: 3
+ *                 attributes:
+ *                   size: "M"
+ *                   color: "Black"
+ *     responses:
+ *       200:
+ *         description: Cart updated successfully
+ *       400:
+ *         description: Invalid quantity, invalid variant, or exceeds available stock
+ *       404:
+ *         description: Cart or product not found
+ */
+router.patch("/", protect, updateCart);
 export default router;
