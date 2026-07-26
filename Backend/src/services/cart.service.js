@@ -37,6 +37,7 @@ const transformCart = (cart) => {
             product: {
                 _id: product._id,
                 productName: product.productName,
+                 description: product.description,
                 image: product.image,
                 category: product.category,
                 productType: product.productType
@@ -211,7 +212,7 @@ export const addItemToCart = async (userId, data) => {
     }
     await cart.populate(
         "items.product",
-        "productName price category image productType variants"
+        "productName description  price category image productType variants"
     );
 
     const { cart: transformedCart, totalPrice } = transformCart(cart);
@@ -230,7 +231,7 @@ export const getUserCart = async (userId) => {
 
     const cart = await Cart.findOne({ user: userId }).populate(
         "items.product",
-        "productName price category image productType variants"
+        "productName description  price category image productType variants"
     );
 
     if (!cart) {
@@ -306,7 +307,7 @@ export const removeCartItem = async (userId, productId, attributes = {}) => {
 
     await cart.populate(
         "items.product",
-        "productName price category image productType variants"
+        "productName description  price category image productType variants"
     );
 
     const { cart: transformedCart, totalPrice } = transformCart(cart);
@@ -411,7 +412,7 @@ export const updateCartQuantity = async (userId, data) => {
 
     await cart.populate(
         "items.product",
-        "productName price category image productType variants"
+        "productName description  price category image productType variants"
     );
 
     const { cart: transformedCart, totalPrice } = transformCart(cart);
@@ -424,4 +425,76 @@ export const updateCartQuantity = async (userId, data) => {
         totalPrice
     };
 
+};
+
+export const getGuestCartDetailsService = async (items = []) => {
+
+    if (!Array.isArray(items) || items.length === 0) {
+        return {
+            items: [],
+            totalPrice: 0
+        };
+    }
+
+    const productIds = items.map(item => item.productId);
+
+    const products = await Product.find({
+        _id: { $in: productIds }
+    });
+
+    const productMap = new Map();
+
+    products.forEach(product => {
+        productMap.set(product._id.toString(), product);
+    });
+
+    const transformedItems = [];
+    let totalPrice = 0;
+
+    for (const item of items) {
+
+        const product = productMap.get(item.productId);
+
+        if (!product) continue;
+
+        const cartItem = {
+            quantity: item.quantity,
+            product: {
+                _id: product._id,
+                productName: product.productName,
+                 description: product.description,
+                image: product.image,
+                category: product.category,
+                productType: product.productType
+            }
+        };
+
+        if (product.productType === "simple") {
+
+            cartItem.product.price = product.price;
+
+            totalPrice += product.price * item.quantity;
+
+        } else {
+
+            const variant = findVariant(product, item.attributes || {});
+
+            if (!variant) continue;
+
+            cartItem.selectedVariant = {
+                attributes: normalizeVariantAttributes(variant.attributes),
+                price: variant.price,
+                stock: variant.stock
+            };
+
+            totalPrice += variant.price * item.quantity;
+        }
+
+        transformedItems.push(cartItem);
+    }
+
+    return {
+        items: transformedItems,
+        totalPrice
+    };
 };
