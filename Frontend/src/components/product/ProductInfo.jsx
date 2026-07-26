@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Heart,
   ShoppingCart,
@@ -10,8 +11,12 @@ import {
   RotateCcw,
 } from "lucide-react";
 
+import { toast } from "sonner";
+
 import VariantSelector from "./VariantSelector";
 import QuantitySelector from "./QuantitySelector";
+import useCart from "../../hooks/useCart";
+import compareAttributes from "../../utils/compareAttributes";
 
 const trustRow = [
   { icon: Truck, label: "Free delivery ₹499+" },
@@ -20,10 +25,19 @@ const trustRow = [
 ];
 
 const ProductInfo = ({ product }) => {
+  const location = useLocation();
+  const cartQuantity = location.state?.quantity;
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [isWishlisted, setIsWishlisted] = useState(false);
+
+  const {
+    cart,
+    addItem,
+    removeItem,
+    loading,
+  } = useCart();
 
   const {
     productName,
@@ -52,10 +66,96 @@ const ProductInfo = ({ product }) => {
   const currentStock =
     productType === "variant" ? selectedVariant?.stock ?? 0 : stock;
 
-  // Reset quantity whenever variant changes
-  useEffect(() => {
-    setQuantity(1);
-  }, [selectedVariant]);
+  const isInCart = useMemo(() => {
+
+    return cart.some((item) => {
+
+      const sameProduct =
+        item.product._id === product._id;
+
+      if (!sameProduct) return false;
+
+      if (productType === "simple") {
+        return true;
+      }
+
+      return compareAttributes(
+        item.selectedVariant?.attributes || {},
+        selectedVariant?.attributes || {}
+      );
+
+    });
+
+  }, [
+    cart,
+    product,
+    productType,
+    selectedVariant,
+  ]);
+
+ /// Restore variant & quantity when coming from Cart
+useEffect(() => {
+
+  // -------- Simple Product --------
+  if (productType === "simple") {
+
+    if (cartQuantity) {
+      setQuantity(cartQuantity);
+    }
+
+    return;
+  }
+
+  // -------- Variant Product --------
+
+  if (variants.length === 0) return;
+
+  const cartAttributes = location.state?.selectedAttributes;
+
+  if (cartAttributes) {
+
+    const matchedVariant = variants.find((variant) =>
+      compareAttributes(
+        variant.attributes,
+        cartAttributes
+      )
+    );
+
+    if (matchedVariant) {
+
+      setSelectedVariant(matchedVariant);
+      setSelectedAttributes(matchedVariant.attributes);
+
+      if (cartQuantity) {
+        setQuantity(cartQuantity);
+      }
+
+      return;
+    }
+
+  }
+
+  const firstAvailable =
+    variants.find((variant) => variant.stock > 0) ||
+    variants[0];
+
+  if (firstAvailable) {
+
+    setSelectedVariant(firstAvailable);
+    setSelectedAttributes(firstAvailable.attributes);
+
+    if (cartQuantity) {
+      setQuantity(cartQuantity);
+    }
+
+  }
+
+}, [
+  variants,
+  productType,
+  location.state,
+  cartQuantity,
+]);
 
   useEffect(() => {
     if (quantity > currentStock && currentStock > 0) {
@@ -67,9 +167,48 @@ const ProductInfo = ({ product }) => {
 
   const isOutOfStock = currentStock === 0;
 
-  const handleAddToCart = () => {
-    console.log({ product, quantity, selectedVariant });
-    // TODO: Cart API
+  const handleCartAction = async () => {
+
+    try {
+
+      if (productType === "variant" && !selectedVariant) {
+        toast.error("Please select a variant.");
+        return;
+      }
+
+      if (isInCart) {
+
+        await removeItem(
+          product._id,
+          productType === "variant"
+            ? selectedVariant.attributes
+            : {}
+        );
+
+        toast.success("Removed from cart");
+        return;
+      }
+
+      await addItem({
+        productId: product._id,
+        quantity,
+        attributes:
+          productType === "variant"
+            ? selectedVariant.attributes
+            : {},
+      });
+
+      toast.success("Added to cart");
+
+    } catch (error) {
+
+      toast.error(
+        error?.response?.data?.message ||
+        "Something went wrong"
+      );
+
+    }
+
   };
 
   const handleBuyNow = () => {
@@ -167,18 +306,26 @@ const ProductInfo = ({ product }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <button
-          onClick={handleAddToCart}
-          disabled={isOutOfStock}
+          onClick={handleCartAction}
+          disabled={isOutOfStock || loading}
           className="flex items-center justify-center gap-2 rounded-full border-2 border-indigo-600 px-3 py-2.5 text-sm font-semibold text-[#0A3D91] transition hover:bg-indigo-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 sm:px-5 sm:py-3 sm:text-base"
         >
-          <ShoppingCart size={16} className="sm:hidden" />
-          <ShoppingCart size={18} className="hidden sm:block" />
-          Add to Cart
+         {!isInCart && (
+  <>
+    <ShoppingCart size={16} className="sm:hidden" />
+    <ShoppingCart size={18} className="hidden sm:block" />
+  </>
+)}
+          {loading
+            ? "Loading..."
+            : isInCart
+              ? "Remove from Cart"
+              : "Add to Cart"}
         </button>
 
         <button
           onClick={handleBuyNow}
-          disabled={isOutOfStock}
+          disabled={isOutOfStock || loading}
           className="flex items-center justify-center gap-2 rounded-full bg-[#0A3D91] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-300 sm:px-5 sm:py-3 sm:text-base"
         >
           <Zap size={16} className="sm:hidden" />
