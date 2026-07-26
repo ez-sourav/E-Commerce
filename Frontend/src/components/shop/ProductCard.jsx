@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiHeart, FiShoppingCart } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { FiHeart } from "react-icons/fi";
 import formatPrice from "../../utils/formatPrice";
 
 const ProductCard = ({
@@ -45,15 +45,7 @@ const ProductCard = ({
     // Integrate Wishlist API
   };
 
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // TODO:
-    // Integrate Cart API
-    console.log(product);
-  };
-
+  
   return (
     <motion.article
       whileHover={{ y: -8 }}
@@ -141,21 +133,6 @@ const ProductCard = ({
             )}
           </div>
 
-          {/* Add To Cart */}
-          {showAddToCart && (
-            <button
-              onClick={handleAddToCart}
-              disabled={!inStock}
-              className={`flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium transition-all xs:gap-2 xs:py-2.5 xs:text-sm sm:rounded-xl sm:py-3 sm:text-base ${inStock
-                ? "bg-[#0A3D91] text-white hover:bg-[#082f73]"
-                : "cursor-not-allowed bg-gray-300 text-gray-500"
-                }`}
-            >
-              <FiShoppingCart size={14} className="sm:hidden" />
-              <FiShoppingCart size={18} className="hidden sm:block" />
-              {inStock ? "Add to Cart" : "Unavailable"}
-            </button>
-          )}
         </div>
       </Link>
     </motion.article>
