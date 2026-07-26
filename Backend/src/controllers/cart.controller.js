@@ -1,4 +1,4 @@
-import { addItemToCart,getUserCart,removeCartItem,updateCartQuantity} from "../services/cart.service.js";
+import { addItemToCart,getUserCart,removeCartItem,updateCartQuantity,getGuestCartDetailsService} from "../services/cart.service.js";
 
 export const addToCart = async (req, res) => {
 
@@ -86,4 +86,33 @@ export const updateCart = async (req, res) => {
 
     }
 
+};
+
+export const getGuestCartDetails = async (req, res, next) => {
+    try {
+
+        const { items } = req.body;
+
+        if (!Array.isArray(items)) {
+            return res.status(400).json({
+                success: false,
+                message: "Items array is required"
+            });
+        }
+
+        const result = await getGuestCartDetailsService(items);
+
+        return res.status(200).json({
+            status: 200,
+            success: true,
+            message: "Guest cart fetched successfully",
+            cart: {
+                items: result.items
+            },
+            totalPrice: result.totalPrice
+        });
+
+    } catch (error) {
+        next(error);
+    }
 };
