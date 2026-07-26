@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useProductSearch from "../../hooks/useProductSearch";
+import useCart from "../../hooks/useCart";
 
 /* ---------- Shared brand bits ---------- */
 
@@ -25,8 +26,6 @@ const BOTTOM_TABS = [
   { to: "/wishlist", label: "Wishlist", icon: Heart },
   { to: "/profile", label: "Profile", icon: User },
 ];
-
-const CART_COUNT = 2;
 
 const Logo = ({ compact = false }) => (
   <NavLink
@@ -63,6 +62,10 @@ const Navbar = () => {
     handleSearch,
     handleKeyDown,
   } = useProductSearch();
+  const { cart } = useCart();
+
+ const CART_COUNT = cart.length;
+ 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 4);
     onScroll();
@@ -154,9 +157,11 @@ const Navbar = () => {
               aria-label={`Cart, ${CART_COUNT} items`}
             >
               <ShoppingCart size={21} />
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0A3D91] text-[10px] font-bold text-white">
-                {CART_COUNT}
-              </span>
+              {CART_COUNT > 0 && (
+                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0A3D91] text-[10px] font-bold text-white">
+                  {CART_COUNT}
+                </span>
+              )}
             </NavLink>
 
             <NavLink
@@ -185,9 +190,11 @@ const Navbar = () => {
               aria-label={`Cart, ${CART_COUNT} items`}
             >
               <ShoppingCart size={21} />
-              <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#0A3D91] text-[10px] font-bold text-white">
-                {CART_COUNT}
-              </span>
+              {CART_COUNT > 0 && (
+                <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#0A3D91] text-[10px] font-bold text-white">
+                  {CART_COUNT}
+                </span>
+              )}
             </NavLink>
           </div>
         </div>
