@@ -1,4 +1,4 @@
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
@@ -34,24 +34,11 @@ const ProductCard = ({ product }) => {
                         {product.productName}
                     </h3>
 
-                    <div className="sm:mt-0">
+                    <div className="mt-2 sm:mt-3">
                         <span className="text-sm xs:text-base sm:text-xl font-bold text-gray-900 group-hover:text-[#0A3D91]">
                             ₹{product.price.toLocaleString("en-IN")}
                         </span>
                     </div>
-
-                    <button
-                        onClick={(e) => e.preventDefault()}
-                        className="mt-2 sm:mt-4 flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border-2 border-[#0A3D91] bg-white py-2 text-xs font-semibold text-[#0A3D91] transition-all hover:bg-indigo-50 active:scale-[0.98] xs:gap-2 xs:py-2.5 xs:text-sm sm:h-10 sm:rounded-xl sm:py-3 sm:text-base"
-                    >
-                        <ShoppingCart size={14} className="sm:hidden" />
-                        <ShoppingCart size={18} className="hidden sm:block" />
-                        
-                        <span className="sm:hidden">Add</span>
-
-                        <span className="hidden sm:inline">Add to Cart</span>
-                    </button>
-
                 </div>
             </article>
         </Link>
