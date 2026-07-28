@@ -10,10 +10,21 @@ export const registerUserController = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required."
-            })
+            });
         }
 
-        const userExists = await User.findOne({ email });
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters."
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+
+        const userExists = await User.findOne({
+            email: normalizedEmail
+        });
 
         if (userExists) {
             return res.status(400).json({
@@ -25,10 +36,10 @@ export const registerUserController = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
-            name,
-            email,
-            password: hashedPassword
-        })
+            name: name.trim(),
+            email: normalizedEmail,
+            password: hashedPassword,
+        });
 
         return res.status(201).json({
             success: true,
@@ -36,7 +47,8 @@ export const registerUserController = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role,
             }
         });
 
@@ -58,7 +70,9 @@ export const loginUserController = async (req, res) => {
             })
         }
 
-        const user = await User.findOne({ email });
+        const normalizedEmail = email.trim().toLowerCase();
+
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -87,8 +101,14 @@ export const loginUserController = async (req, res) => {
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({
             success: true,
-            message: "Login successful"
-        })
+            message: "Login successful",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
+        });
 
     } catch (error) {
         return res.status(500).json({
@@ -117,6 +137,9 @@ export const getMe = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
+                address: user.address,
+                role: user.role,
             }
         });
 
@@ -130,10 +153,11 @@ export const getMe = async (req, res) => {
 };
 
 export const logoutUserController = (req, res) => {
-    return res.clearCookie('token', {
+    return res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: 'strict'
+        sameSite:
+            process.env.NODE_ENV === "production" ? "none" : "lax",
     }).status(200).json({
         success: true,
         message: "User logged out successfully."
