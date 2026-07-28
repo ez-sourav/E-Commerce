@@ -1,6 +1,6 @@
 import express from 'express';
 import {protect} from '../middlewares/auth.middleware.js'
-import { addToCart, getCart, removeFromCart, updateCart} from '../controllers/cart.controller.js';
+import { addToCart, getCart, removeFromCart, updateCart,getGuestCartDetails} from '../controllers/cart.controller.js';
 const router = express.Router();
 
 /**
@@ -76,6 +76,7 @@ router.get('/',protect,getCart);
  *         description: Product removed from cart
  */
 router.delete('/:productId',protect,removeFromCart);
+
 /**
  * @swagger
  * /api/cart:
@@ -109,4 +110,30 @@ router.delete('/:productId',protect,removeFromCart);
  *         description: Cart or product not found
  */
 router.patch("/", protect, updateCart);
+
+/**
+ * @swagger
+ * /api/cart/guest:
+ *   post:
+ *     summary: Get guest cart details
+ *     tags: [Cart]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example:
+ *             items:
+ *               - productId: "64f123abc123"
+ *                 quantity: 2
+ *                 attributes:
+ *                   size: "M"
+ *                   color: "Black"
+ *               - productId: "64f456abc456"
+ *                 quantity: 1
+ *     responses:
+ *       200:
+ *         description: Guest cart fetched successfully
+ */
+router.post("/guest", getGuestCartDetails);
+
 export default router;
