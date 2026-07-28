@@ -14,59 +14,43 @@ export const CartProvider = ({ children }) => {
 
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // For cart actions
+    const [initialLoading, setInitialLoading] = useState(true); // For first cart load
+    const [removingItemKey, setRemovingItemKey] = useState(null);
 
-    // ---------------- FETCH CART ----------------
-
-    const fetchCart = async () => {
-
+    // ------- FETCH CART -------
+    const fetchCart = async (showInitialLoader = false) => {
         try {
-
-            setLoading(true);
-
+            if (showInitialLoader) {
+                setInitialLoading(true);
+            }
             const data = await getCart();
-
             setCart(data.cart?.items || []);
             setTotalPrice(data.totalPrice || 0);
-
         } catch (error) {
-
             console.error("Fetch Cart Error:", error);
-
         } finally {
-
-            setLoading(false);
-
+            if (showInitialLoader) {
+                setInitialLoading(false);
+            }
         }
-
     };
 
-    // ---------------- ADD ITEM ----------------
-
+    // ------- ADD ITEM -------
     const addItem = async (item) => {
-
         try {
-
             setLoading(true);
-
             await addToCart(item);
-
             await fetchCart();
-
         } catch (error) {
-
             console.error("Add To Cart Error:", error);
             throw error;
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-    // ---------------- UPDATE QUANTITY ----------------
+    // ------- UPDATE QUANTITY -------
 
     const updateItemQuantity = async (
         productId,
@@ -99,38 +83,39 @@ export const CartProvider = ({ children }) => {
 
     };
 
-    // ---------------- REMOVE ITEM ----------------
+    // ------- REMOVE ITEM -------
 
-    const removeItem = async (
+    const removeItem = async (productId, attributes = {}) => {
+
+    const itemKey = JSON.stringify({
         productId,
-        attributes = {}
-    ) => {
+        attributes,
+    });
 
-        try {
+    try {
 
-            setLoading(true);
+        setLoading(true);
+        setRemovingItemKey(itemKey);
 
-            await removeCartItem(
-                productId,
-                attributes
-            );
+        await removeCartItem(productId, attributes);
 
-            await fetchCart();
+        await fetchCart();
 
-        } catch (error) {
+    } catch (error) {
 
-            console.error("Remove Item Error:", error);
-            throw error;
+        console.error("Remove Item Error:", error);
+        throw error;
 
-        } finally {
+    } finally {
 
-            setLoading(false);
+        setRemovingItemKey(null);
+        setLoading(false);
 
-        }
+    }
 
-    };
+};
 
-    // ---------------- CLEAR CART ----------------
+    // ------- CLEAR CART -------
 
     const clearCart = async () => {
 
@@ -157,9 +142,7 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
-
-        fetchCart();
-
+        fetchCart(true);
     }, []);
 
     return (
@@ -169,6 +152,8 @@ export const CartProvider = ({ children }) => {
                 cart,
                 totalPrice,
                 loading,
+                initialLoading,
+                removingItemKey,
                 fetchCart,
                 addItem,
                 updateItemQuantity,
