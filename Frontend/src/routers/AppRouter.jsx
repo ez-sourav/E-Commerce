@@ -10,11 +10,21 @@ import Register from '../pages/Register'
 import NotFound from '../pages/NotFoundPage'
 import Checkout from '../pages/Checkout'
 import MainLayout from '../layouts/MainLayout'
+import { Toaster } from "sonner";
 
 const AppRouter = () => {
 
     return (
         <BrowserRouter>
+
+            <Toaster
+                richColors
+                position="top-center"
+                closeButton
+                duration={1400}
+                theme="light"
+            />
+
             <Routes>
                 <Route element={<MainLayout />}>
                     <Route path='/' element={<Home />} />
