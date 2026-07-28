@@ -9,6 +9,8 @@ import {
   Truck,
   ShieldCheck,
   RotateCcw,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 
 import { toast } from "sonner";
@@ -93,38 +95,11 @@ const ProductInfo = ({ product }) => {
     selectedVariant,
   ]);
 
- /// Restore variant & quantity when coming from Cart
-useEffect(() => {
+  /// Restore variant & quantity when coming from Cart
+  useEffect(() => {
 
-  // -------- Simple Product --------
-  if (productType === "simple") {
-
-    if (cartQuantity) {
-      setQuantity(cartQuantity);
-    }
-
-    return;
-  }
-
-  // -------- Variant Product --------
-
-  if (variants.length === 0) return;
-
-  const cartAttributes = location.state?.selectedAttributes;
-
-  if (cartAttributes) {
-
-    const matchedVariant = variants.find((variant) =>
-      compareAttributes(
-        variant.attributes,
-        cartAttributes
-      )
-    );
-
-    if (matchedVariant) {
-
-      setSelectedVariant(matchedVariant);
-      setSelectedAttributes(matchedVariant.attributes);
+    // -------- Simple Product --------
+    if (productType === "simple") {
 
       if (cartQuantity) {
         setQuantity(cartQuantity);
@@ -133,29 +108,56 @@ useEffect(() => {
       return;
     }
 
-  }
+    // -------- Variant Product --------
 
-  const firstAvailable =
-    variants.find((variant) => variant.stock > 0) ||
-    variants[0];
+    if (variants.length === 0) return;
 
-  if (firstAvailable) {
+    const cartAttributes = location.state?.selectedAttributes;
 
-    setSelectedVariant(firstAvailable);
-    setSelectedAttributes(firstAvailable.attributes);
+    if (cartAttributes) {
 
-    if (cartQuantity) {
-      setQuantity(cartQuantity);
+      const matchedVariant = variants.find((variant) =>
+        compareAttributes(
+          variant.attributes,
+          cartAttributes
+        )
+      );
+
+      if (matchedVariant) {
+
+        setSelectedVariant(matchedVariant);
+        setSelectedAttributes(matchedVariant.attributes);
+
+        if (cartQuantity) {
+          setQuantity(cartQuantity);
+        }
+
+        return;
+      }
+
     }
 
-  }
+    const firstAvailable =
+      variants.find((variant) => variant.stock > 0) ||
+      variants[0];
 
-}, [
-  variants,
-  productType,
-  location.state,
-  cartQuantity,
-]);
+    if (firstAvailable) {
+
+      setSelectedVariant(firstAvailable);
+      setSelectedAttributes(firstAvailable.attributes);
+
+      if (cartQuantity) {
+        setQuantity(cartQuantity);
+      }
+
+    }
+
+  }, [
+    variants,
+    productType,
+    location.state,
+    cartQuantity,
+  ]);
 
   useEffect(() => {
     if (quantity > currentStock && currentStock > 0) {
@@ -185,7 +187,9 @@ useEffect(() => {
             : {}
         );
 
-        toast.success("Removed from cart");
+        toast.success("Removed from cart", {
+          icon: <Trash2 className="h-4 w-4" />,
+        });
         return;
       }
 
@@ -198,7 +202,9 @@ useEffect(() => {
             : {},
       });
 
-      toast.success("Added to cart");
+      toast.success("Added to cart", {
+        icon: <ShoppingCart className="h-4 w-4" />,
+      });
 
     } catch (error) {
 
@@ -308,16 +314,22 @@ useEffect(() => {
         <button
           onClick={handleCartAction}
           disabled={isOutOfStock || loading}
-          className="flex items-center justify-center gap-2 rounded-full border-2 border-indigo-600 px-3 py-2.5 text-sm font-semibold text-[#0A3D91] transition hover:bg-indigo-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 sm:px-5 sm:py-3 sm:text-base"
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-indigo-600 px-3 py-2.5 text-sm font-semibold text-[#0A3D91] transition hover:cursor-pointer hover:bg-indigo-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 sm:px-5 sm:py-3 sm:text-base"
         >
-         {!isInCart && (
-  <>
-    <ShoppingCart size={16} className="sm:hidden" />
-    <ShoppingCart size={18} className="hidden sm:block" />
-  </>
-)}
+          {!loading ? (
+            isInCart ? (
+              <Trash2 className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+            ) : (
+              <ShoppingCart className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+            )
+          ) : (
+            <Loader2 className="h-4 w-4 animate-spin sm:h-4.5 sm:w-4.5" />
+          )}
+
           {loading
-            ? "Loading..."
+            ? isInCart
+              ? "Removing..."
+              : "Adding..."
             : isInCart
               ? "Remove from Cart"
               : "Add to Cart"}
