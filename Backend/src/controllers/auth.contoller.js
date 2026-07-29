@@ -41,7 +41,19 @@ export const registerUserController = async (req, res) => {
             password: hashedPassword,
         });
 
-        return res.status(201).json({
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "2d" }
+        );
+
+        return res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite:
+                process.env.NODE_ENV === "production"?"none":"lax",
+            maxAge: 2 * 24 * 60 * 60 * 1000,
+        }).status(201).json({
             success: true,
             message: "User registered successfully.",
             user: {
