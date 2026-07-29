@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 import {
     getCart,
@@ -18,13 +19,18 @@ export const CartProvider = ({ children }) => {
     const [initialLoading, setInitialLoading] = useState(true); // For first cart load
     const [removingItemKey, setRemovingItemKey] = useState(null);
 
+    const {
+    isAuthenticated,
+    initialLoading: authLoading,
+} = useAuth();
+
     // ------- FETCH CART -------
     const fetchCart = async (showInitialLoader = false) => {
         try {
             if (showInitialLoader) {
                 setInitialLoading(true);
             }
-            const data = await getCart();
+            const data = await getCart(isAuthenticated);
             setCart(data.cart?.items || []);
             setTotalPrice(data.totalPrice || 0);
         } catch (error) {
@@ -40,7 +46,7 @@ export const CartProvider = ({ children }) => {
     const addItem = async (item) => {
         try {
             setLoading(true);
-            await addToCart(item);
+            await addToCart(item,isAuthenticated);
             await fetchCart();
         } catch (error) {
             console.error("Add To Cart Error:", error);
@@ -65,7 +71,8 @@ export const CartProvider = ({ children }) => {
             await updateQuantity(
                 productId,
                 quantity,
-                attributes
+                attributes,
+                isAuthenticated
             );
 
             await fetchCart();
@@ -97,7 +104,7 @@ export const CartProvider = ({ children }) => {
         setLoading(true);
         setRemovingItemKey(itemKey);
 
-        await removeCartItem(productId, attributes);
+        await removeCartItem(productId, attributes,isAuthenticated);
 
         await fetchCart();
 
@@ -123,7 +130,7 @@ export const CartProvider = ({ children }) => {
 
             setLoading(true);
 
-            await clearCartService();
+            await clearCartService(isAuthenticated);
 
             setCart([]);
             setTotalPrice(0);
@@ -142,9 +149,10 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
+    if (!authLoading) {
         fetchCart(true);
-    }, []);
-
+    }
+}, [isAuthenticated, authLoading]);
     return (
 
         <CartContext.Provider
