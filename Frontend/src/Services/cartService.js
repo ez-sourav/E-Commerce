@@ -8,30 +8,15 @@ import {
     clearGuestCart,
 } from "../utils/cartStorage";
 
-// Temporary
-// Later replace with AuthContext
-const isAuthenticated = () => {
-    return !!localStorage.getItem("token");
-};
-
-// -------------------- GET CART --------------------
-
-export const getCart = async () => {
-
+export const getCart = async (isAuthenticated) => {
     try {
-
-        if (isAuthenticated()) {
-
+        if (isAuthenticated) {
             const { data } = await api.get("/cart");
-
             return data;
-
         }
 
         const guestItems = getGuestCart();
-
         if (guestItems.length === 0) {
-
             return {
                 success: true,
                 cart: {
@@ -40,39 +25,28 @@ export const getCart = async () => {
                 totalPrice: 0,
                 isGuest: true
             };
-
         }
 
         const { data } = await api.post("/cart/guest", {
             items: guestItems
         });
-
         return data;
-
     } catch (error) {
-
         throw error;
-
     }
 
 };
 
 // -------------------- ADD ITEM --------------------
 
-export const addToCart = async (item) => {
-
+export const addToCart = async (item,isAuthenticated) => {
     try {
-
-        if (isAuthenticated()) {
-
+        if (isAuthenticated) {
             const { data } = await api.post("/cart", item);
-
             return data;
-
         }
 
         const cart = addGuestItem(item);
-
         return {
             success: true,
             message: "Added to guest cart",
@@ -80,33 +54,26 @@ export const addToCart = async (item) => {
         };
 
     } catch (error) {
-
         throw error;
-
     }
 
 };
 
-// -------------------- UPDATE QUANTITY --------------------
-
 export const updateQuantity = async (
     productId,
     quantity,
-    attributes = {}
+    attributes = {},
+    isAuthenticated
 ) => {
-
     try {
 
-        if (isAuthenticated()) {
-
+        if (isAuthenticated) {
             const { data } = await api.patch("/cart", {
                 productId,
                 quantity,
                 attributes,
             });
-
             return data;
-
         }
 
         const cart = updateGuestQuantity(
@@ -120,26 +87,20 @@ export const updateQuantity = async (
             message: "Guest cart updated",
             cart
         };
-
     } catch (error) {
-
         throw error;
-
     }
 
 };
 
-// -------------------- REMOVE ITEM --------------------
-
 export const removeItem = async (
     productId,
-    attributes = {}
+    attributes = {},
+    isAuthenticated
 ) => {
 
     try {
-
-        if (isAuthenticated()) {
-
+        if (isAuthenticated) {
             const { data } = await api.delete(
                 `/cart/${productId}`,
                 {
@@ -148,9 +109,7 @@ export const removeItem = async (
                     },
                 }
             );
-
             return data;
-
         }
 
         const cart = removeGuestItem(
@@ -165,26 +124,17 @@ export const removeItem = async (
         };
 
     } catch (error) {
-
         throw error;
-
     }
 
 };
 
-// -------------------- CLEAR CART --------------------
-
-export const clearCart = async () => {
-
+export const clearCart = async (isAuthenticated) => {
     try {
-
-        if (isAuthenticated()) {
-
+        if (isAuthenticated) {
             // Implement later
             // DELETE /cart
-
             return;
-
         }
 
         clearGuestCart();
@@ -195,37 +145,22 @@ export const clearCart = async () => {
         };
 
     } catch (error) {
-
         throw error;
-
     }
 
 };
 
-// -------------------- SYNC GUEST CART --------------------
-
-export const syncGuestCart = async () => {
-
+export const syncGuestCart = async (isAuthenticated) => {
     try {
-
-        if (!isAuthenticated()) return;
-
+        if (!isAuthenticated) return;
         const guestCart = getGuestCart();
-
         if (guestCart.length === 0) return;
-
         for (const item of guestCart) {
-
             await api.post("/cart", item);
-
         }
-
         clearGuestCart();
-
     } catch (error) {
-
         throw error;
-
     }
 
 };
