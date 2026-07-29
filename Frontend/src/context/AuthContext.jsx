@@ -37,10 +37,11 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (userData) => {
-
         try {
             setLoading(true);
             const data = await registerUser(userData);
+            await syncGuestCart(true);
+            await fetchCurrentUser();
             return data;
         } catch (error) {
             console.error("Register Error:", error);
@@ -48,7 +49,6 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-
     };
 
     const login = async (userData) => {
