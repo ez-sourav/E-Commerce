@@ -154,9 +154,7 @@ const orderSchema = new mongoose.Schema(
             min: 0,
         },
     },
-    {
-        timestamps: true,
-    }
+    {timestamps: true,}
 );
 
 export default mongoose.model("Order", orderSchema);
