@@ -25,36 +25,6 @@ const userSchema = new mongoose.Schema({
         default: "",
     },
 
-    address: {
-        fullName: {
-            type: String,
-            default: "",
-        },
-        phone: {
-            type: String,
-            default: "",
-        },
-        street: {
-            type: String,
-            default: "",
-        },
-        city: {
-            type: String,
-            default: "",
-        },
-        state: {
-            type: String,
-            default: "",
-        },
-        pincode: {
-            type: String,
-            default: "",
-        },
-        country: {
-            type: String,
-            default: "India",
-        },
-    },
 
     role: {
         type: String,
@@ -62,6 +32,6 @@ const userSchema = new mongoose.Schema({
         default: "user",
     },
 }, { timestamps: true });
-const User = mongoose.model("User",userSchema)
+const User = mongoose.model("User", userSchema)
 
 export default User;
