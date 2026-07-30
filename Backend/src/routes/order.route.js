@@ -1,6 +1,10 @@
-import {protect} from '../middlewares/auth.middleware.js'
-import { createOrder,getMyOrders } from '../controllers/order.controller.js'
-import express from "express"
+import express from "express";
+import { protect } from "../middlewares/auth.middleware.js";
+import {
+    createOrder,
+    getMyOrders,
+    getOrderById
+} from "../controllers/order.controller.js";
 
 const router = express.Router();
 
@@ -15,9 +19,9 @@ const router = express.Router();
  * @swagger
  * /api/orders:
  *   post:
- *     summary: Create order from cart
+ *     summary: Create a new order
  *     tags: [Orders]
- *     description: Converts user's cart into an order, validates stock, reduces stock, and clears cart.
+ *     description: Creates an order from the authenticated user's cart, validates stock, reduces inventory, and clears the cart.
  *     responses:
  *       201:
  *         description: Order placed successfully
@@ -27,52 +31,68 @@ const router = express.Router();
  *               success: true
  *               message: "Order placed successfully"
  *               order:
- *                 _id: "65abc123"
- *                 user: "64f123abc123"
+ *                 _id: "66abc123"
+ *                 user: "65abc123"
  *                 items:
- *                   - product: "64f123abc123"
+ *                   - product: "65product123"
+ *                     productName: "T-Shirt"
+ *                     image: "https://example.com/image.jpg"
  *                     attributes:
  *                       size: "M"
  *                       color: "Black"
  *                     quantity: 2
- *                     price: 499
- *                 totalPrice: 998
- *                 status: "pending"
+ *                     price: 599
+ *                 shippingAddress:
+ *                   fullName: "John Doe"
+ *                   mobile: "9876543210"
+ *                   email: "john@example.com"
+ *                   addressLine: "Street 1"
+ *                   city: "Kolkata"
+ *                   state: "West Bengal"
+ *                   postalCode: "700001"
+ *                   country: "India"
+ *                 paymentMethod: "COD"
+ *                 paymentStatus: "pending"
+ *                 orderStatus: "pending"
+ *                 subtotal: 1198
+ *                 shippingCharge: 0
+ *                 totalPrice: 1198
  */
-
-router.post('/',protect,createOrder);
+router.post("/", protect, createOrder);
 
 /**
  * @swagger
  * /api/orders:
  *   get:
- *     summary: Get my orders
+ *     summary: Get all orders of the logged-in user
  *     tags: [Orders]
- *     description: Fetch all orders of the logged-in user
+ *     description: Returns all orders placed by the authenticated user, sorted by newest first.
  *     responses:
  *       200:
  *         description: Orders fetched successfully
- *         content:
- *           application/json:
- *             example:
- *               success: true
- *               message: "Orders fetched successfully"
- *               orders:
- *                 - _id: "65abc123"
- *                   items:
- *                     - product:
- *                         _id: "64f123abc123"
- *                         productName: "T-Shirt"
- *                         price: 499
- *                       attributes:
- *                         size: "M"
- *                         color: "Black"
- *                       quantity: 2
- *                       price: 499
- *                   totalPrice: 998
- *                   status: "pending"
  */
+router.get("/", protect, getMyOrders);
 
-router.get('/',protect,getMyOrders);
+/**
+ * @swagger
+ * /api/orders/{orderId}:
+ *   get:
+ *     summary: Get a single order
+ *     tags: [Orders]
+ *     description: Returns a specific order belonging to the authenticated user.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: MongoDB Order ID
+ *     responses:
+ *       200:
+ *         description: Order fetched successfully
+ *       404:
+ *         description: Order not found
+ */
+router.get("/:orderId", protect, getOrderById);
 
 export default router;
