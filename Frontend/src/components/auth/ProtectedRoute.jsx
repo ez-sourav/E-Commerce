@@ -1,11 +1,16 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
-const PublicRoute = ({ children }) => {
-    const { isAuthenticated, initialLoading } = useAuth();
+const ProtectedRoute = ({ children }) => {
+    const {
+        isAuthenticated,
+        initialLoading,
+    } = useAuth();
 
-    // Wait until authentication check is complete
+    const location = useLocation();
+
+    // Wait until authentication check completes
     if (initialLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center">
@@ -14,13 +19,19 @@ const PublicRoute = ({ children }) => {
         );
     }
 
-    // Already logged in? Don't allow access to Login/Register
-    if (isAuthenticated) {
-        return <Navigate to="/" replace />;
+    // Not logged in
+    if (!isAuthenticated) {
+        return (
+            <Navigate
+                to="/login"
+                replace
+                state={{ from: location }}
+            />
+        );
     }
 
-    // Not logged in? Allow access
+    // Logged in
     return children;
 };
 
-export default PublicRoute;
+export default ProtectedRoute;
