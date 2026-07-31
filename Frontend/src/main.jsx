@@ -1,13 +1,16 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import { CartProvider } from "./context/CartContext";
-import { AuthProvider } from './context/AuthContext.jsx';
+import { createRoot } from "react-dom/client";
+import App from "./App.jsx";
 
-createRoot(document.getElementById('root')).render(
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
+import { AddressProvider } from "./context/AddressContext.jsx";
+
+createRoot(document.getElementById("root")).render(
     <AuthProvider>
         <CartProvider>
-            <App />
+            <AddressProvider>
+                <App />
+            </AddressProvider>
         </CartProvider>
     </AuthProvider>
-
-)
+);
