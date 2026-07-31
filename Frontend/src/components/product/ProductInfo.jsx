@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate  } from "react-router-dom";
 import {
   Heart,
   ShoppingCart,
@@ -27,6 +27,7 @@ const trustRow = [
 ];
 
 const ProductInfo = ({ product }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const cartQuantity = location.state?.quantity;
   const [quantity, setQuantity] = useState(1);
@@ -217,9 +218,31 @@ const ProductInfo = ({ product }) => {
 
   };
 
-  const handleBuyNow = () => {
-    console.log({ product, quantity, selectedVariant });
-    // TODO: Checkout
+  const handleBuyNow = async () => {
+    try {
+      if (productType === "variant" && !selectedVariant) {
+        toast.error("Please select a variant.");
+        return;
+      }
+
+      if (!isInCart) {
+        await addItem({
+          productId: product._id,
+          quantity,
+          attributes:
+            productType === "variant"
+              ? selectedVariant.attributes
+              : {},
+        });
+      }
+
+      navigate("/checkout");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        "Unable to proceed to checkout."
+      );
+    }
   };
 
   const handleWishlist = () => {
