@@ -13,6 +13,7 @@ import Phone from '../../assets/images/hero/Phone.jpg'
 import Shoes from '../../assets/images/hero/Shoes.avif'
 import Watch from '../../assets/images/hero/Watch.png'
 import Shirt from '../../assets/images/hero/Shirt.png'
+import { Link } from "react-router-dom";
 
 const floatTransition = (duration) => ({
     duration,
@@ -52,16 +53,21 @@ const Hero = () => {
                     </p>
 
                     <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 lg:justify-start">
-                        <button className="flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 font-semibold text-white transition hover:scale-105 active:scale-95">
+                        <Link
+                            to="/shop"
+                            className="flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 font-semibold text-white transition duration-200 hover:scale-105 active:scale-95"
+                        >
                             Shop Now
                             <ArrowRight size={18} />
-                        </button>
+                        </Link>
 
-                        <button className="rounded-full border border-gray-300 px-8 py-4 font-semibold transition hover:bg-gray-100 active:scale-95">
+                        <Link
+                            to="/shop"
+                            className="rounded-full border border-gray-300 px-8 py-4 text-center font-semibold transition duration-200 hover:bg-gray-100 active:scale-95"
+                        >
                             Browse Categories
-                        </button>
+                        </Link>
                     </div>
-
                     <div className="mt-2 pt-8 sm:mt-2 sm:pt-10">
 
                         <div className="mb-8 h-px bg-linear-to-r from-transparent via-gray-300/70 to-transparent" />
