@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
-import toast from "react-hot-toast";
-
+import { toast } from "sonner";
+import { motion } from "framer-motion";
 import { useAddress } from "../../context/AddressContext";
 
 import SelectedAddressCard from "../address/SelectedAddressCard";
@@ -185,63 +185,69 @@ const AddressSelector = ({
         }
     };
 
-   if (loading) {
-    return (
-        <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
+    if (loading) {
+        return (
+            <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
 
-            {/* Header */}
-            <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gray-200" />
+                {/* Header */}
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-gray-200" />
 
-                <div className="flex-1">
-                    <div className="h-5 w-44 rounded bg-gray-200" />
-                    <div className="mt-2 h-4 w-72 max-w-full rounded bg-gray-100" />
+                    <div className="flex-1">
+                        <div className="h-5 w-44 rounded bg-gray-200" />
+                        <div className="mt-2 h-4 w-72 max-w-full rounded bg-gray-100" />
+                    </div>
                 </div>
-            </div>
 
-            <div className="mt-6 rounded-xl border border-gray-100 p-5">
+                <div className="mt-6 rounded-xl border border-gray-100 p-5">
 
-                {/* Badge */}
-                <div className="h-7 w-24 rounded-full bg-gray-200" />
+                    {/* Badge */}
+                    <div className="h-7 w-24 rounded-full bg-gray-200" />
 
-                {/* Name + Buttons */}
-                <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    {/* Name + Buttons */}
+                    <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-                    <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gray-200" />
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gray-200" />
 
-                        <div>
-                            <div className="h-5 w-44 rounded bg-gray-200" />
-                            <div className="mt-3 h-4 w-36 rounded bg-gray-100" />
+                            <div>
+                                <div className="h-5 w-44 rounded bg-gray-200" />
+                                <div className="mt-3 h-4 w-36 rounded bg-gray-100" />
+                            </div>
                         </div>
+
+                        <div className="flex gap-2">
+                            <div className="h-10 w-24 rounded-lg bg-gray-200" />
+                            <div className="h-10 w-32 rounded-lg bg-gray-200" />
+                        </div>
+
                     </div>
 
-                    <div className="flex gap-2">
-                        <div className="h-10 w-24 rounded-lg bg-gray-200" />
-                        <div className="h-10 w-32 rounded-lg bg-gray-200" />
+                    {/* Address */}
+                    <div className="mt-6 space-y-3">
+                        <div className="h-4 w-full rounded bg-gray-100" />
+                        <div className="h-4 w-11/12 rounded bg-gray-100" />
+                        <div className="h-4 w-3/4 rounded bg-gray-100" />
                     </div>
 
-                </div>
-
-                {/* Address */}
-                <div className="mt-6 space-y-3">
-                    <div className="h-4 w-full rounded bg-gray-100" />
-                    <div className="h-4 w-11/12 rounded bg-gray-100" />
-                    <div className="h-4 w-3/4 rounded bg-gray-100" />
                 </div>
 
             </div>
-
-        </div>
-    );
-}
+        );
+    }
     return (
         <>
-            <SelectedAddressCard
-                address={selectedAddress}
-                onChange={() => setIsSelectionModalOpen(true)}
-                onAddAddress={handleAddAddress}
-            />
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+            >
+                <SelectedAddressCard
+                    address={selectedAddress}
+                    onChange={() => setIsSelectionModalOpen(true)}
+                    onAddAddress={handleAddAddress}
+                />
+            </motion.div>
 
             {/* Address Selection Modal */}
             <AddressSelectionModal
