@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -27,8 +27,15 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const CART_COUNT = cart.length;
+
+  const hideBottomNav = [
+    "/checkout",
+    "/payment",
+    "/order-confirmation",
+].includes(location.pathname);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 4);
@@ -110,10 +117,12 @@ const Navbar = () => {
         }}
       />
 
-      <MobileBottomNav
-        user={user}
-        isAuthenticated={isAuthenticated}
-      />
+      {!hideBottomNav && (
+        <MobileBottomNav
+          user={user}
+          isAuthenticated={isAuthenticated}
+        />
+      )}
     </>
   );
 };
