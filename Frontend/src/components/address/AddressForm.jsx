@@ -95,7 +95,7 @@ const AddressForm = ({
     };
 
     const onSubmitForm = (data) => {
-        // Validate required fields
+
         if (!data.fullName || !data.mobile || !data.city || !data.state || !data.postalCode) {
             toast.error('Please fill all required fields marked with *');
             return;
@@ -104,12 +104,11 @@ const AddressForm = ({
         onSubmit(data);
     };
 
-    // Responsive input class
     const inputClass = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-[#0A3D91]  focus:ring-[#0A3D91]/10 placeholder:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed";
     const labelClass = "mb-1.5 block text-sm font-medium text-gray-700";
     const errorClass = "mt-1.5 text-xs font-medium text-red-500";
     const iconClass = "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400";
-    const sectionLabelClass = "text-xs font-semibold uppercase tracking-wide text-gray-400";
+    const sectionLabelClass = "text-xs font-semibold uppercase tracking-wide text-gray-900";
 
     return (
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-5 sm:space-y-6">
@@ -120,7 +119,7 @@ const AddressForm = ({
                 {/* Full Name */}
                 <div>
                     <label htmlFor="fullName" className={labelClass}>
-                        Full Name <span className="text-[#0A3D91]">*</span>
+                        Full Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                         <User size={18} className={iconClass} />
@@ -150,7 +149,7 @@ const AddressForm = ({
                 {/* Mobile */}
                 <div>
                     <label htmlFor="mobile" className={labelClass}>
-                        Mobile Number <span className="text-[#0A3D91]">*</span>
+                        Mobile Number <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                         <Phone size={18} className={iconClass} />
@@ -193,7 +192,7 @@ const AddressForm = ({
                 {/* House No */}
                 <div>
                     <label htmlFor="houseNo" className={labelClass}>
-                        House No.
+                        House No
                     </label>
                     <div className="relative">
                         <Home size={18} className={iconClass} />
@@ -254,7 +253,7 @@ const AddressForm = ({
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label htmlFor="city" className={labelClass}>
-                            City <span className="text-[#0A3D91]">*</span>
+                            City <span className="text-red-500">*</span>
                         </label>
                         <input
                             id="city"
@@ -276,7 +275,7 @@ const AddressForm = ({
 
                     <div>
                         <label htmlFor="state" className={labelClass}>
-                            State <span className="text-[#0A3D91]">*</span>
+                            State <span className="text-red-500">*</span>
                         </label>
                         <input
                             id="state"
@@ -301,7 +300,7 @@ const AddressForm = ({
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label htmlFor="postalCode" className={labelClass}>
-                            Postal Code <span className="text-[#0A3D91]">*</span>
+                            Postal Code <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
                             <MapPinned size={18} className={iconClass} />

@@ -59,7 +59,7 @@ const SelectedAddressCard = ({
                 <div className="flex gap-2">
                     <button
                         onClick={onChange}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#0A3D91]/25 px-4 py-2 text-sm font-medium text-[#0A3D91] transition hover:bg-[#0A3D91]/6 sm:flex-none"
+                        className="inline-flex flex-1 items-center hover:cursor-pointer justify-center gap-1.5 rounded-lg border border-[#0A3D91]/25 px-4 py-2 text-sm font-medium text-[#0A3D91] transition hover:bg-[#0A3D91]/6 sm:flex-none"
                     >
                         <ChevronRight size={16} />
                         Change
@@ -67,7 +67,7 @@ const SelectedAddressCard = ({
 
                     <button
                         onClick={onAddAddress}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0A3D91] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#082f73] sm:flex-none"
+                        className="inline-flex flex-1 items-center hover:cursor-pointer justify-center gap-1.5 rounded-lg bg-[#0A3D91] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#082f73] sm:flex-none"
                     >
                         <Plus size={16} />
                         Add Address
