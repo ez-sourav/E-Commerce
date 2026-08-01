@@ -48,7 +48,7 @@ const CartSummary = ({ totalPrice, itemCount }) => {
                 className="mb-6 flex items-center justify-between"
             >
                 <span className="text-base font-semibold text-gray-900 sm:text-lg">Total</span>
-                <span className="text-xl font-bold text-green-600 sm:text-2xl">₹{grandTotal}</span>
+                <span className="text-xl font-bold text-[#0A3D91] sm:text-2xl">₹{grandTotal}</span>
             </motion.div>
 
             {deliveryCharge === 0 ? (
@@ -91,7 +91,7 @@ const CartSummary = ({ totalPrice, itemCount }) => {
             >
                 <Link
                     to="/checkout"
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-black py-3 text-sm font-medium text-white transition hover:bg-gray-900 active:scale-[0.98] sm:text-base"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0A3D91] py-3 text-sm font-medium text-white transition hover:bg-[#08357d] active:scale-[0.98] sm:text-base"
                 >
                     <ShoppingBag size={19} />
                     Proceed to Checkout
@@ -107,39 +107,10 @@ const CartSummary = ({ totalPrice, itemCount }) => {
             >
                 <Link
                     to="/shop"
-                    className="mt-3 block w-full rounded-lg border border-gray-300 py-3 text-center text-sm font-medium transition hover:bg-gray-100 sm:text-base"
+                    className="mt-3 block w-full rounded-lg border border-gray-300 py-3 text-center text-sm font-medium transition bg-gray-100 hover:bg-gray-200 sm:text-base"
                 >
                     Continue Shopping
                 </Link>
-            </motion.div>
-
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.3 }}
-                className="mt-6 border-t border-gray-100 pt-5"
-            >
-                <div className="flex items-center gap-2">
-                    <ShieldCheck size={18} className="text-green-600" />
-                    <h3 className="text-sm font-semibold text-gray-800">
-                        Secure Checkout
-                    </h3>
-                </div>
-
-                <p className="mt-2 text-xs text-gray-500">
-                    Payments will be securely processed using Stripe.
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                    {["Visa", "MasterCard", "RuPay", "UPI", "Net Banking"].map((method) => (
-                        <span
-                            key={method}
-                            className="rounded-md border border-gray-200 bg-gray-50 px-3 py-1 text-xs text-gray-700"
-                        >
-                            {method}
-                        </span>
-                    ))}
-                </div>
             </motion.div>
         </motion.div>
     );

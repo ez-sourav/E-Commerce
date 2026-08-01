@@ -73,10 +73,8 @@ const isRemoving = removingItemKey === currentItemKey;
                     <img
                         src={product.image?.url || "/placeholder-image.jpg"}
                         alt={product.productName}
-                        className="aspect-square w-full rounded-lg border border-gray-100 object-cover transition group-hover:opacity-90 group-hover:scale-[1.02]"
+                        className="aspect-square w-full rounded-lg border border-gray-100 object-cover transition  group-hover:scale-[1.02]"
                     />
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/0 rounded-lg transition group-hover:bg-black/10">
-                    </span>
                 </button>
 
                 <div className="flex flex-1 flex-col justify-between gap-3 sm:gap-4">
