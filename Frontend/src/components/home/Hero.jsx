@@ -55,7 +55,7 @@ const Hero = () => {
                     <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 lg:justify-start">
                         <Link
                             to="/shop"
-                            className="flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 font-semibold text-white transition duration-200 hover:scale-105 active:scale-95"
+                            className="flex items-center justify-center gap-2 rounded-full bg-[#0A3D91] px-8 py-4 font-semibold text-white transition duration-200 hover:scale-105 active:scale-95"
                         >
                             Shop Now
                             <ArrowRight size={18} />
@@ -63,7 +63,7 @@ const Hero = () => {
 
                         <Link
                             to="/shop"
-                            className="rounded-full border border-gray-300 px-8 py-4 text-center font-semibold transition duration-200 hover:bg-gray-100 active:scale-95"
+                            className="rounded-full border border-gray-300 px-8 py-4 text-center font-semibold transition duration-200 bg-gray-100 hover:bg-gray-200 active:scale-95"
                         >
                             Browse Categories
                         </Link>

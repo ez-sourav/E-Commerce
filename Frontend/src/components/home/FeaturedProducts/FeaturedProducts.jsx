@@ -67,7 +67,7 @@ const FeaturedProducts = () => {
           <div className="mt-10 sm:mt-12 flex justify-center">
             <Link
               to="/shop"
-              className="rounded-full  border border-gray-300 bg-white px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base font-semibold text-gray-900 transition-all duration-300 hover:border-[#0A3D91] hover:bg-[#0A3D91] hover:text-white active:scale-[0.98]"
+              className="rounded-full  border border-gray-300 bg-gray-100 px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base font-semibold text-gray-900 transition-all duration-300 hover:border-gray-200 hover:bg-gray-200 active:scale-[0.98]"
             >
               View All Products
             </Link>
