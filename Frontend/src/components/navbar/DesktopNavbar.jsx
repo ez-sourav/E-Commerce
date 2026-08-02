@@ -195,11 +195,9 @@ const DesktopNavbar = ({
                                 {/* Logout */}
                                 <button
                                     onClick={handleLogout}
-                                    className="flex w-full items-center gap-3 px-4 py-3 text-red-600 transition hover:bg-red-50"
+                                    className="flex w-full items-center gap-3 px-4 py-3 cursor-pointer text-red-600 transition hover:bg-red-50"
                                 >
-
                                     <LogOut size={18} />
-
                                     <span className="font-medium">
                                         Logout
                                     </span>
