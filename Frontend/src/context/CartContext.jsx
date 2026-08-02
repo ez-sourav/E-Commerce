@@ -18,11 +18,13 @@ export const CartProvider = ({ children }) => {
     const [loading, setLoading] = useState(false); // For cart actions
     const [initialLoading, setInitialLoading] = useState(true); // For first cart load
     const [removingItemKey, setRemovingItemKey] = useState(null);
+    const [updatingItemKey, setUpdatingItemKey] = useState(null);
+    const [updatingAction, setUpdatingAction] = useState(null); // "increase" | "decrease"
 
     const {
-    isAuthenticated,
-    initialLoading: authLoading,
-} = useAuth();
+        isAuthenticated,
+        initialLoading: authLoading,
+    } = useAuth();
 
     // ------- FETCH CART -------
     const fetchCart = async (showInitialLoader = false) => {
@@ -46,7 +48,7 @@ export const CartProvider = ({ children }) => {
     const addItem = async (item) => {
         try {
             setLoading(true);
-            await addToCart(item,isAuthenticated);
+            await addToCart(item, isAuthenticated);
             await fetchCart();
         } catch (error) {
             console.error("Add To Cart Error:", error);
@@ -61,12 +63,20 @@ export const CartProvider = ({ children }) => {
     const updateItemQuantity = async (
         productId,
         quantity,
-        attributes = {}
+        attributes = {},
+        action
     ) => {
+
+        const itemKey = JSON.stringify({
+            productId,
+            attributes,
+        });
 
         try {
 
             setLoading(true);
+            setUpdatingItemKey(itemKey);
+            setUpdatingAction(action);
 
             await updateQuantity(
                 productId,
@@ -84,6 +94,8 @@ export const CartProvider = ({ children }) => {
 
         } finally {
 
+            setUpdatingItemKey(null);
+            setUpdatingAction(null);
             setLoading(false);
 
         }
@@ -94,33 +106,33 @@ export const CartProvider = ({ children }) => {
 
     const removeItem = async (productId, attributes = {}) => {
 
-    const itemKey = JSON.stringify({
-        productId,
-        attributes,
-    });
+        const itemKey = JSON.stringify({
+            productId,
+            attributes,
+        });
 
-    try {
+        try {
 
-        setLoading(true);
-        setRemovingItemKey(itemKey);
+            setLoading(true);
+            setRemovingItemKey(itemKey);
 
-        await removeCartItem(productId, attributes,isAuthenticated);
+            await removeCartItem(productId, attributes, isAuthenticated);
 
-        await fetchCart();
+            await fetchCart();
 
-    } catch (error) {
+        } catch (error) {
 
-        console.error("Remove Item Error:", error);
-        throw error;
+            console.error("Remove Item Error:", error);
+            throw error;
 
-    } finally {
+        } finally {
 
-        setRemovingItemKey(null);
-        setLoading(false);
+            setRemovingItemKey(null);
+            setLoading(false);
 
-    }
+        }
 
-};
+    };
 
     // ------- CLEAR CART -------
 
@@ -149,10 +161,10 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
-    if (!authLoading) {
-        fetchCart(true);
-    }
-}, [isAuthenticated, authLoading]);
+        if (!authLoading) {
+            fetchCart(true);
+        }
+    }, [isAuthenticated, authLoading]);
     return (
 
         <CartContext.Provider
@@ -162,6 +174,8 @@ export const CartProvider = ({ children }) => {
                 loading,
                 initialLoading,
                 removingItemKey,
+                updatingItemKey,
+                updatingAction,
                 fetchCart,
                 addItem,
                 updateItemQuantity,
