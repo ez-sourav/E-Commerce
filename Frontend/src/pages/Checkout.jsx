@@ -21,29 +21,35 @@ const Checkout = () => {
     const [selectedAddressId, setSelectedAddressId] = useState(null);
 
     useEffect(() => {
-    if (!initialLoading && cart.length === 0) {
-        navigate("/cart", {
-            replace: true,
-        });
-    }
-}, [cart, initialLoading, navigate]);
+        if (!initialLoading && cart.length === 0) {
+            navigate("/cart", {
+                replace: true,
+            });
+        }
+    }, [cart, initialLoading, navigate]);
 
     return (
         <div className="min-h-screen bg-gray-50 pb-8 lg:pb-8">
             <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 sm:py-2 lg:px-8">
 
                 {/* Header */}
-                <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
-
+                <div className="mb-8">
                     <button
                         onClick={() => navigate("/cart")}
-                        className="flex items-center gap-1.5 rounded-lg py-2 pr-2 text-sm font-medium text-gray-600 transition-colors hover:cursor-pointer hover:text-black sm:gap-2 sm:text-base"
+                        className="flex items-center gap-2 text-gray-600 cursor-pointer hover:text-black transition-colors"
                     >
-                        <ArrowLeft size={18} className="shrink-0" />
-                        <span className="hidden sm:inline">Back to Cart</span>
-                        <span className="sm:hidden">Back</span>
+                        <ArrowLeft size={18} />
+                        <span>Back to Cart</span>
                     </button>
 
+                    <div className="mt-5">
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            Checkout
+                        </h1>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Review your order and delivery details.
+                        </p>
+                    </div>
                 </div>
 
                 {initialLoading ? (
