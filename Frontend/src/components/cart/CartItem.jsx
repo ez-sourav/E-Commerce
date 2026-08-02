@@ -5,7 +5,13 @@ import useCart from "../../hooks/useCart";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 const CartItem = ({ item }) => {
-    const { updateItemQuantity, removeItem, loading, removingItemKey } = useCart();
+    const {
+        updateItemQuantity,
+        removeItem,
+        updatingItemKey,
+        updatingAction,
+        removingItemKey,
+    } = useCart();
     const [isZoomOpen, setIsZoomOpen] = useState(false);
 
     const product = item.product;
@@ -13,19 +19,31 @@ const CartItem = ({ item }) => {
     const isVariant = product.productType === "variant";
     const price = isVariant ? item.selectedVariant?.price || 0 : product.price;
     const attributes = item.selectedVariant?.attributes || {};
-const currentItemKey = JSON.stringify({
-    productId: product._id,
-    attributes,
-});
+    const currentItemKey = JSON.stringify({
+        productId: product._id,
+        attributes,
+    });
 
-const isRemoving = removingItemKey === currentItemKey;
+    const isRemoving = removingItemKey === currentItemKey;
+    const isUpdating = updatingItemKey === currentItemKey;
     const increaseQuantity = () => {
-        updateItemQuantity(product._id, quantity + 1, attributes);
+        updateItemQuantity(
+            product._id,
+            quantity + 1,
+            attributes,
+            "increase"
+        );
     };
 
     const decreaseQuantity = () => {
         if (quantity <= 1) return;
-        updateItemQuantity(product._id, quantity - 1, attributes);
+
+        updateItemQuantity(
+            product._id,
+            quantity - 1,
+            attributes,
+            "decrease"
+        );
     };
 
     const handleRemove = async () => {
@@ -115,11 +133,11 @@ const isRemoving = removingItemKey === currentItemKey;
 
                         <button
                             onClick={handleRemove}
-                           disabled={isRemoving}
+                            disabled={isRemoving}
                             aria-label="Remove item"
                             className="shrink-0 self-start rounded-md p-1.5 text-red-500 transition hover:bg-red-50 hover:text-red-600 hover:cursor-pointer disabled:opacity-50 disabled:hover:bg-transparent"
                         >
-                            {isRemoving  ? (
+                            {isRemoving ? (
                                 <Loader2
                                     size={18}
                                     className="animate-spin sm:h-5 sm:w-5"
@@ -137,22 +155,42 @@ const isRemoving = removingItemKey === currentItemKey;
                         <div className="flex items-center overflow-hidden rounded-lg border border-gray-200 shadow-sm">
                             <button
                                 onClick={decreaseQuantity}
-                                disabled={loading || quantity <= 1}
+                                disabled={isUpdating || quantity <= 1}
                                 aria-label="Decrease quantity"
                                 className="p-2 text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 disabled:opacity-40 disabled:hover:bg-transparent sm:p-2.5"
                             >
-                                <Minus size={16} className="sm:h-4.5 sm:w-4.5" />
+                                {isUpdating && updatingAction === "decrease" ? (
+                                    <Loader2
+                                        size={16}
+                                        className="animate-spin sm:h-4.5 sm:w-4.5"
+                                    />
+                                ) : (
+                                    <Minus
+                                        size={16}
+                                        className="sm:h-4.5 sm:w-4.5"
+                                    />
+                                )}
                             </button>
                             <span className="min-w-8 px-2 text-center text-sm font-medium text-gray-900 sm:min-w-10 sm:px-3 sm:text-base">
                                 {quantity}
                             </span>
                             <button
                                 onClick={increaseQuantity}
-                                disabled={loading}
+                                disabled={isUpdating}
                                 aria-label="Increase quantity"
                                 className="p-2 text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 disabled:opacity-40 disabled:hover:bg-transparent sm:p-2.5"
                             >
-                                <Plus size={16} className="sm:h-4.5 sm:w-4.5" />
+                                {isUpdating && updatingAction === "increase" ? (
+                                    <Loader2
+                                        size={16}
+                                        className="animate-spin sm:h-4.5 sm:w-4.5"
+                                    />
+                                ) : (
+                                    <Plus
+                                        size={16}
+                                        className="sm:h-4.5 sm:w-4.5"
+                                    />
+                                )}
                             </button>
                         </div>
 
