@@ -7,7 +7,6 @@ import { useAddress } from "../../context/AddressContext";
 import SelectedAddressCard from "../address/SelectedAddressCard";
 import AddressSelectionModal from "../address/AddressSelectionModal";
 import AddressModal from "../address/AddressModal";
-import ConfirmModal from "../common/ConfirmModal";
 
 const AddressSelector = ({
     selectedAddressId,
@@ -131,60 +130,6 @@ const AddressSelector = ({
         }
     };
 
-    // Delete Address
-    const handleDeleteAddress = (id) => {
-        setDeleteId(id);
-    };
-
-    const confirmDeleteAddress = async () => {
-        try {
-            setDeleteLoading(true);
-
-            await removeAddress(deleteId);
-
-            if (selectedAddressId === deleteId) {
-                setSelectedAddressId(null);
-            }
-
-            toast.success(
-                "Address deleted successfully."
-            );
-
-            setDeleteId(null);
-        } catch (error) {
-            toast.error(
-                error?.response?.data?.message ||
-                error?.message ||
-                "Failed to delete address."
-            );
-        } finally {
-            setDeleteLoading(false);
-        }
-    };
-
-    // Make Default Address
-    const handleMakeDefault = async (id) => {
-        try {
-            setDefaultLoadingId(id);
-
-            await makeDefaultAddress(id);
-
-            setSelectedAddressId(id);
-
-            toast.success(
-                "Default address updated."
-            );
-        } catch (error) {
-            toast.error(
-                error?.response?.data?.message ||
-                error?.message ||
-                "Failed to update default address."
-            );
-        } finally {
-            setDefaultLoadingId(null);
-        }
-    };
-
     if (loading) {
         return (
             <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
@@ -263,25 +208,13 @@ const AddressSelector = ({
                 }}
             />
 
-            {/* Add / Edit Address Modal */}
+            {/* Add Address Modal */}
             <AddressModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 initialValues={editingAddress}
                 onSubmit={handleSubmit}
                 loading={submitLoading}
-            />
-
-            {/* Delete Confirmation */}
-            <ConfirmModal
-                isOpen={!!deleteId}
-                title="Delete Address"
-                message="Are you sure you want to delete this address? This action cannot be undone."
-                confirmText="Delete"
-                cancelText="Cancel"
-                loading={deleteLoading}
-                onConfirm={confirmDeleteAddress}
-                onCancel={() => setDeleteId(null)}
             />
         </>
     );
