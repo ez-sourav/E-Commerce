@@ -14,7 +14,11 @@ import MainLayout from '../layouts/MainLayout'
 import { Toaster } from "sonner";
 import ProtectedRoute from '../components/auth/ProtectedRoute'
 import PublicRoute from "../components/auth/PublicRoute";
+import Payment from "../pages/Payment";
 import OrderConfirmation from "../pages/OrderConfirmation";
+import MyOrders from "../pages/MyOrders";
+import OrderDetails from "../pages/OrderDetails";
+import ManageAddresses from "../pages/ManageAddresses";
 
 const AppRouter = () => {
 
@@ -46,11 +50,30 @@ const AppRouter = () => {
                             </ProtectedRoute>
                         }
                     />
+
                     <Route
-                        path="/order-confirmation"
+                        path="/payment"
+                        element={
+                            <ProtectedRoute>
+                                <Payment />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/order-confirmation/:orderId"
                         element={
                             <ProtectedRoute>
                                 <OrderConfirmation />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/addresses"
+                        element={
+                            <ProtectedRoute>
+                                <ManageAddresses />
                             </ProtectedRoute>
                         }
                     />
@@ -59,6 +82,24 @@ const AppRouter = () => {
                         element={
                             <ProtectedRoute>
                                 <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/orders"
+                        element={
+                            <ProtectedRoute>
+                                <MyOrders />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/orders/:orderId"
+                        element={
+                            <ProtectedRoute>
+                                <OrderDetails />
                             </ProtectedRoute>
                         }
                     />
