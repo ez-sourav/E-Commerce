@@ -152,6 +152,7 @@ export const getMe = async (req, res) => {
                 phone: user.phone,
                 address: user.address,
                 role: user.role,
+                createdAt: user.createdAt,
             }
         });
 
