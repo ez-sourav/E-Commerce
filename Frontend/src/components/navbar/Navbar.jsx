@@ -31,11 +31,12 @@ const Navbar = () => {
 
   const CART_COUNT = cart.length;
 
-  const hideBottomNav = [
-    "/checkout",
-    "/payment",
-    "/order-confirmation",
-].includes(location.pathname);
+  const hideMobileNavigation =
+    location.pathname.startsWith("/checkout") ||
+    location.pathname.startsWith("/payment") ||
+    location.pathname.startsWith("/order-confirmation") ||
+    location.pathname.startsWith("/orders") ||
+    location.pathname.startsWith("/address");
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 4);
@@ -105,24 +106,25 @@ const Navbar = () => {
         handleLogout={handleLogout}
       />
 
-      <MobileHeader
-        isScrolled={isScrolled}
-        cartCount={CART_COUNT}
-        searchProps={{
-          search,
-          setSearch,
-          handleSearch,
-          handleKeyDown,
-          searchInputRef,
-        }}
-      />
-
-      {!hideBottomNav && (
-        <MobileBottomNav
-          user={user}
-          isAuthenticated={isAuthenticated}
+      {!hideMobileNavigation && (
+        <MobileHeader
+          isScrolled={isScrolled}
+          cartCount={CART_COUNT}
+          searchProps={{
+            search,
+            setSearch,
+            handleSearch,
+            handleKeyDown,
+            searchInputRef,
+          }}
         />
       )}
+      {!hideMobileNavigation && (
+  <MobileBottomNav
+    user={user}
+    isAuthenticated={isAuthenticated}
+  />
+)}
     </>
   );
 };
