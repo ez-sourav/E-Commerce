@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation,useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Heart,
   ShoppingCart,
@@ -19,6 +19,7 @@ import VariantSelector from "./VariantSelector";
 import QuantitySelector from "./QuantitySelector";
 import useCart from "../../hooks/useCart";
 import compareAttributes from "../../utils/compareAttributes";
+import useWishlist from "../../hooks/useWishlist";
 
 const trustRow = [
   { icon: Truck, label: "Free delivery ₹499+" },
@@ -33,14 +34,12 @@ const ProductInfo = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedAttributes, setSelectedAttributes] = useState({});
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
-  const {
-    cart,
-    addItem,
-    removeItem,
-    loading,
-  } = useCart();
+
+  const { cart, addItem, removeItem, loading, } = useCart();
+  const { isWishlisted, addToWishlist, removeFromWishlist } = useWishlist();
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const wishlisted = isWishlisted(product._id);
 
   const {
     productName,
@@ -245,10 +244,33 @@ const ProductInfo = ({ product }) => {
     }
   };
 
-  const handleWishlist = () => {
-    setIsWishlisted((prev) => !prev);
-    console.log(product);
-    // TODO: Wishlist API
+  const handleWishlist = async () => {
+    if (wishlistLoading) return;
+
+    try {
+      setWishlistLoading(true);
+
+      if (wishlisted) {
+        await removeFromWishlist(product._id);
+
+        toast.success(
+          "Product removed from wishlist."
+        );
+      } else {
+        await addToWishlist(product._id);
+
+        toast.success(
+          "Product added to wishlist."
+        );
+      }
+    } catch (error) {
+      toast.error(
+        error.message ||
+        "Wishlist operation failed."
+      );
+    } finally {
+      setWishlistLoading(false);
+    }
   };
 
   return (
@@ -261,13 +283,29 @@ const ProductInfo = ({ product }) => {
 
         <button
           onClick={handleWishlist}
-          aria-label="Add to wishlist"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-red-200 hover:text-red-500"
+          disabled={wishlistLoading}
+          aria-label={
+            wishlisted
+              ? "Remove from wishlist"
+              : "Add to wishlist"
+          }
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-red-200 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <Heart
-            size={18}
-            className={isWishlisted ? "fill-red-500 text-red-500" : ""}
-          />
+          {wishlistLoading ? (
+            <Loader2
+              size={18}
+              className="animate-spin text-[#0A3D91]"
+            />
+          ) : (
+            <Heart
+              size={18}
+              className={
+                wishlisted
+                  ? "fill-red-500 text-red-500"
+                  : ""
+              }
+            />
+          )}
         </button>
       </div>
 
