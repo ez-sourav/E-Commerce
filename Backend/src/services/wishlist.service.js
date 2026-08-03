@@ -43,7 +43,14 @@ export const addToWishlistService = async (
 
     await wishlist.save();
 
-    return wishlist;
+    // Return populated wishlist
+    return await Wishlist.findOne({
+        user: userId,
+    }).populate({
+        path: "products.product",
+        select:
+            "productName price stock image category productType variants",
+    });
 };
 
 export const getWishlistService = async (userId) => {
@@ -52,7 +59,7 @@ export const getWishlistService = async (userId) => {
     }).populate({
         path: "products.product",
         select:
-            "productName price stock image category productType",
+            "productName price stock image category productType variants",
     });
 
     return wishlist || {
@@ -98,6 +105,6 @@ export const removeFromWishlistService = async (
     }).populate({
         path: "products.product",
         select:
-            "productName price stock image category productType",
+            "productName price stock image category productType variants",
     });
 };
