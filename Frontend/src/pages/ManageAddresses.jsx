@@ -113,7 +113,7 @@ const ManageAddresses = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
+        <div className="bg-gray-50 py-6 sm:py-8">
             <div className="mx-auto max-w-5xl px-4 sm:px-6">
 
                 <button
