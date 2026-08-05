@@ -5,7 +5,7 @@ import {
     CheckCircle2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import CardPaymentForm from "./CardPaymentForm";
 const PaymentMethod = ({
     paymentMethod,
     setPaymentMethod,
@@ -19,11 +19,11 @@ const PaymentMethod = ({
             disabled: false,
         },
         {
-            id: "STRIPE",
+            id: "CARD",
             label: "Credit / Debit Card",
-            description: "Secure online payment using Stripe.",
+            description: "Secure online payment (Demo).",
             icon: CreditCard,
-            disabled: true,
+            disabled: false,
         },
         {
             id: "UPI",
@@ -79,10 +79,11 @@ const PaymentMethod = ({
 
     const iconVariants = {
         hover: {
-            scale: 1.1,
-            rotate: [0, -10, 10, -5, 5, 0],
-            transition: { duration: 0.5 }
-        }
+            scale: 1.08,
+            transition: {
+                duration: 0.2,
+            },
+        },
     };
 
     return (
@@ -128,18 +129,18 @@ const PaymentMethod = ({
                                 htmlFor={method.id}
                                 variants={itemVariants}
                                 custom={index}
-                                whileHover={!method.disabled ? { 
+                                whileHover={!method.disabled ? {
                                     backgroundColor: isSelected ? "rgba(10, 61, 145, 0.05)" : "rgba(0,0,0,0.02)",
-                                    x: 4 
+                                    x: 4
                                 } : {}}
                                 whileTap={!method.disabled ? { scale: 0.99 } : {}}
-                                className={`flex cursor-pointer items-start gap-3 sm:gap-4 border-b border-gray-100 p-4 sm:p-5 transition ${
-                                    method.disabled
+                                className={`flex items-start gap-3 sm:gap-4 border-b border-gray-100 p-4 sm:p-5 transition ${method.disabled
                                         ? "cursor-not-allowed opacity-60"
-                                        : isSelected
-                                        ? "bg-[#0A3D91]/5"
-                                        : "hover:bg-gray-50"
-                                }`}
+                                        : `cursor-pointer ${isSelected
+                                            ? "bg-[#0A3D91]/5"
+                                            : "hover:bg-gray-50"
+                                        }`
+                                    }`}
                             >
                                 <input
                                     id={method.id}
@@ -329,48 +330,15 @@ const PaymentMethod = ({
                             </motion.div>
                         )}
 
-                        {selectedPayment?.id === "STRIPE" && (
+                        {selectedPayment?.id === "CARD" && (
                             <motion.div
                                 key="stripe"
                                 variants={contentVariants}
                                 initial="hidden"
                                 animate="visible"
                                 exit="exit"
-                                className="rounded-xl bg-gray-50 p-6 text-center"
                             >
-                                <motion.div
-                                    initial={{ scale: 0, rotate: -180 }}
-                                    animate={{ scale: 1, rotate: 0 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 260,
-                                        damping: 20
-                                    }}
-                                >
-                                    <CreditCard
-                                        size={48}
-                                        className="mx-auto text-gray-400"
-                                    />
-                                </motion.div>
-
-                                <motion.h3
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 }}
-                                    className="mt-4 text-lg font-semibold"
-                                >
-                                    Credit / Debit Card
-                                </motion.h3>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="mt-2 text-sm text-gray-500"
-                                >
-                                    Secure online card payments powered by
-                                    Stripe will be available soon.
-                                </motion.p>
+                                <CardPaymentForm />
                             </motion.div>
                         )}
 

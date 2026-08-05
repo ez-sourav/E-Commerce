@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import useCart from "../../hooks/useCart";
 import { placeOrder } from "../../Services/orderService";
-
+import { createPaymentIntent } from "../../Services/paymentService";
+import { useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement } from "@stripe/react-stripe-js";
 const PlaceOrderButton = ({
     selectedAddressId,
     paymentMethod,
@@ -19,6 +21,8 @@ const PlaceOrderButton = ({
         clearCart,
     } = useCart();
 
+    const stripe = useStripe();
+    const elements = useElements();
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
@@ -44,12 +48,63 @@ const PlaceOrderButton = ({
         try {
             setLoading(true);
 
+
+            // Stripe Card Payment
+            if (paymentMethod === "CARD") {
+                if (!stripe || !elements) {
+                    toast.error("Stripe is not ready.");
+                    return;
+                }
+
+                const paymentIntent = await createPaymentIntent(
+                    selectedAddressId
+                );
+
+                if (!paymentIntent.success) {
+                    throw new Error(
+                        paymentIntent.message ||
+                        "Failed to create payment."
+                    );
+                }
+
+                const { error, paymentIntent: result } =
+                    await stripe.confirmCardPayment(
+                        paymentIntent.clientSecret,
+                        {
+                            payment_method: {
+                                card: elements.getElement(CardElement),
+                            },
+                        }
+                    );
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                if (result.status !== "succeeded") {
+                    throw new Error("Payment failed.");
+                }
+
+                const response = await placeOrder({
+                    addressId: selectedAddressId,
+                    paymentMethod: "CARD",
+                });
+
+                await clearCart();
+
+                if (onSuccess) {
+                    onSuccess(response);
+                }
+
+                return;
+            }
+
+            // Cash On Delivery
             const response = await placeOrder({
                 addressId: selectedAddressId,
                 paymentMethod,
             });
 
-            // Clear frontend cart
             await clearCart();
 
             if (onSuccess) {
@@ -200,7 +255,11 @@ const PlaceOrderButton = ({
                                         >
                                             <Loader2 size={18} />
                                         </motion.div>
-                                        <span>Placing Order...</span>
+                                        <span>
+                                            {paymentMethod === "CARD"
+                                                ? "Processing Payment..."
+                                                : "Placing Order..."}
+                                        </span>
                                     </motion.span>
                                 ) : (
                                     <motion.span
@@ -223,7 +282,11 @@ const PlaceOrderButton = ({
                                         >
                                             <ShieldCheck size={18} />
                                         </motion.div>
-                                        <span>Place Order</span>
+                                        <span>
+                                            {paymentMethod === "CARD"
+                                                ? "Pay Securely"
+                                                : "Place Order"}
+                                        </span>
                                     </motion.span>
                                 )}
                             </AnimatePresence>
@@ -274,7 +337,11 @@ const PlaceOrderButton = ({
                             >
                                 <Loader2 size={20} />
                             </motion.div>
-                            <span>Placing Order...</span>
+                            <span>
+                                {paymentMethod === "CARD"
+                                    ? "Processing Payment..."
+                                    : "Placing Order..."}
+                            </span>
                         </motion.span>
                     ) : (
                         <motion.span
@@ -297,7 +364,11 @@ const PlaceOrderButton = ({
                             >
                                 <ShieldCheck size={20} />
                             </motion.div>
-                            <span>Place Order</span>
+                            <span>
+                                {paymentMethod === "CARD"
+                                    ? "Pay Securely"
+                                    : "Place Order"}
+                            </span>
                         </motion.span>
                     )}
                 </AnimatePresence>
