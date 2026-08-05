@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 
 import useCart from "../hooks/useCart";
 
+import { Elements } from "@stripe/react-stripe-js";
+import stripePromise from "../utils/stripe";
+
 import PaymentMethod from "../components/payment/PaymentMethod";
 import PaymentSummary from "../components/payment/PaymentSummary";
 import PlaceOrderButton from "../components/payment/PlaceOrderButton";
@@ -178,69 +181,70 @@ const Payment = () => {
                     </motion.div>
 
                 ) : (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{
-                            duration: 0.4,
-                            delay: 0.1,
-                        }}
-                        className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start"
-                    >
-                        {/* Left */}
+                    <Elements stripe={stripePromise}>
                         <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
                             transition={{
-                                delay: 0.15,
-                                duration: 0.35,
+                                duration: 0.4,
+                                delay: 0.1,
                             }}
-                            className="lg:col-span-2"
+                            className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start"
                         >
-                            <PaymentMethod
-                                paymentMethod={paymentMethod}
-                                setPaymentMethod={setPaymentMethod}
-                            />
-                        </motion.div>
-
-                        {/* Right */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{
-                                delay: 0.2,
-                                duration: 0.35,
-                            }}
-                            className="space-y-5 lg:sticky lg:top-6 lg:self-start"
-                        >
-                            <PaymentSummary
-                                subtotal={totalPrice}
-                            />
-
+                            {/* Left */}
                             <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
                                 transition={{
-                                    delay: 0.3,
-                                    duration: 0.3,
+                                    delay: 0.15,
+                                    duration: 0.35,
                                 }}
+                                className="lg:col-span-2"
                             >
-                                <PlaceOrderButton
-                                    selectedAddressId={selectedAddressId}
+                                <PaymentMethod
                                     paymentMethod={paymentMethod}
-                                    onSuccess={(response) => {
-                                        navigate(
-                                            `/order-confirmation/${response.order._id}`,
-                                            {
-                                                replace: true,
-                                            }
-                                        );
-                                    }}
+                                    setPaymentMethod={setPaymentMethod}
                                 />
                             </motion.div>
-                        </motion.div>
-                    </motion.div>
 
+                            {/* Right */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                    delay: 0.2,
+                                    duration: 0.35,
+                                }}
+                                className="space-y-5 lg:sticky lg:top-6 lg:self-start"
+                            >
+                                <PaymentSummary
+                                    subtotal={totalPrice}
+                                />
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{
+                                        delay: 0.3,
+                                        duration: 0.3,
+                                    }}
+                                >
+                                    <PlaceOrderButton
+                                        selectedAddressId={selectedAddressId}
+                                        paymentMethod={paymentMethod}
+                                        onSuccess={(response) => {
+                                            navigate(
+                                                `/order-confirmation/${response.order._id}`,
+                                                {
+                                                    replace: true,
+                                                }
+                                            );
+                                        }}
+                                    />
+                                </motion.div>
+                            </motion.div>
+                        </motion.div>
+                    </Elements>
                 )}
 
             </div>
