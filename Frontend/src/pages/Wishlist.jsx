@@ -7,10 +7,12 @@ import WishlistHeader from "../components/wishlist/WishlistHeader";
 import WishlistGrid from "../components/wishlist/WishlistGrid";
 import EmptyWishlist from "../components/wishlist/EmptyWishlist";
 import WishlistSkeleton from "../components/wishlist/WishlistSkeleton";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Wishlist = () => {
     const { wishlist, loading } = useWishlist();
-
+ const navigate = useNavigate();
     const totalItems = useMemo(() => wishlist.length, [wishlist]);
 
     const stateKey = loading
@@ -22,6 +24,14 @@ const Wishlist = () => {
     return (
         <div className="bg-gray-50 py-6 sm:py-8">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <button
+                        type="button"
+                        onClick={() => navigate("/profile")}
+                        className="mb-5 flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-black"
+                    >
+                        <ArrowLeft size={18} />
+                        <span>Back</span>
+                    </button>
                 <WishlistHeader totalItems={totalItems} />
 
                 <AnimatePresence mode="wait">
