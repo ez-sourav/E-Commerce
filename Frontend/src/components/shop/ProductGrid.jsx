@@ -1,4 +1,7 @@
 import { FiSearch } from "react-icons/fi";
+import { Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 import ProductCard from "./ProductCard";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
@@ -21,6 +24,9 @@ const ProductGrid = ({
   clearSearch,
   clearFilters,
   clearAll,
+  loaderRef,
+  isLoadingMore,
+  hasMore,
 }) => {
 
   if (loading) {
@@ -121,14 +127,40 @@ const ProductGrid = ({
   }
 
   return (
-    <section className={GRID_CLASSES}>
-      {products.map((product) => (
-        <ProductCard
-          key={product._id}
-          product={product}
-        />
-      ))}
-    </section>
+    <>
+      <section className={GRID_CLASSES}>
+        {products.map((product) => (
+          <ProductCard
+            key={product._id}
+            product={product}
+          />
+        ))}
+      </section>
+
+      {/* Infinite Scroll Trigger */}
+      <div
+        ref={loaderRef}
+        className="flex justify-center py-8"
+      >
+        <AnimatePresence mode="wait">
+          {isLoadingMore ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
+              <Loader2
+                size={34}
+                className="animate-spin text-[#0A3D91]"
+              />
+            </motion.div>
+          ) : hasMore ? (
+            <div className="h-10" />
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </>
   );
 };
 
