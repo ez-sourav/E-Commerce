@@ -16,10 +16,6 @@ export const DESKTOP_LINKS = [
     to: "/shop",
     label: "Shop",
   },
-  {
-    to: "/collections",
-    label: "Collections",
-  },
 ];
 
 export const GUEST_BOTTOM_TABS = [

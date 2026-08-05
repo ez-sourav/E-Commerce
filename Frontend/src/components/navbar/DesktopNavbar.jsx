@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import {
     Search,
     Heart,
@@ -36,7 +36,7 @@ const DesktopNavbar = ({
 
                 {/* Navigation */}
                 <nav
-                    className="flex items-center justify-center gap-7 lg:gap-8"
+                    className="flex items-center justify-center gap-10 lg:gap-10"
                     aria-label="Primary"
                 >
                     {DESKTOP_LINKS.map((item) => (
@@ -63,17 +63,6 @@ const DesktopNavbar = ({
                     >
                         <Search size={20} />
                     </NavLink>
-
-                    {/* Wishlist
-                    {isAuthenticated && (
-                        <NavLink
-                            to="/wishlist"
-                            className="rounded-full p-2.5 text-gray-900 transition hover:bg-gray-100 hover:text-[#0A3D91] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A3D91]"
-                            aria-label="Wishlist"
-                        >
-                            <Heart size={21} />
-                        </NavLink>
-                    )} */}
 
                     {/* Cart */}
                     <NavLink

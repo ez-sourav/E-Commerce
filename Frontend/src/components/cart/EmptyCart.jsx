@@ -32,14 +32,14 @@ const EmptyCart = () => {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Link
                         to="/shop"
-                        className="flex flex-1 items-center justify-center rounded-lg bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-900 active:scale-[0.98] sm:text-base"
+                        className="flex flex-1 items-center justify-center rounded-lg bg-[#0A3D91] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#083170] active:scale-[0.98] sm:text-base"
                     >
                         Continue Shopping
                     </Link>
 
                     <Link
                         to="/"
-                        className="flex flex-1 items-center justify-center rounded-lg border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 active:scale-[0.98] sm:text-base"
+                        className="flex flex-1 items-center justify-center rounded-lg border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 transition-colors bg-gray-100 hover:bg-gray-200 active:scale-[0.98] sm:text-base"
                     >
                         Back to Home
                     </Link>

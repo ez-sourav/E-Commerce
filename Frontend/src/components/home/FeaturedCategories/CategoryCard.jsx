@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 const CategoryCard = ({ category }) => {
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-[0_10px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)] active:scale-[0.98] transition-all duration-500 cursor-pointer">
+    <Link
+    to={`/shop?category=${encodeURIComponent(category.name)}`} 
+    className="group relative aspect-square overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-[0_10px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)] active:scale-[0.98] transition-all duration-500 cursor-pointer">
       
       <img
         src={category.image}
@@ -30,7 +33,7 @@ const CategoryCard = ({ category }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

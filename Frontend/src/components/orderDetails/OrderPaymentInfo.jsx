@@ -21,12 +21,14 @@ const OrderPaymentInfo = ({
             label: "Cash on Delivery",
             icon: Banknote,
         },
-        STRIPE: {
+
+        CARD: {
             label: "Credit / Debit Card",
             icon: CreditCard,
         },
-        RAZORPAY: {
-            label: "UPI / Razorpay",
+
+        UPI: {
+            label: "UPI",
             icon: Wallet,
         },
     };
