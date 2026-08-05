@@ -10,7 +10,7 @@ import {
     getWishlist,
     addToWishlist,
     removeFromWishlist,
-} from "../Services/wishlistService";
+} from "../services/wishlistService";
 
 import useAuth from "../hooks/useAuth";
 

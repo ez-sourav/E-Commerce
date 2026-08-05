@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 import useCart from "../../hooks/useCart";
-import { placeOrder } from "../../Services/orderService";
-import { createPaymentIntent } from "../../Services/paymentService";
+import { placeOrder } from "../../services/orderService";
+import { createPaymentIntent } from "../../services/paymentService";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { CardElement } from "@stripe/react-stripe-js";
 const PlaceOrderButton = ({

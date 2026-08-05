@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 import useAuth from "../hooks/useAuth";
 import { useAddress } from "../context/AddressContext";
 import useWishlist from "../hooks/useWishlist";
-import { getOrders } from "../Services/orderService";
+import { getOrders } from "../services/orderService";
 
 const containerVariants = {
   hidden: {},

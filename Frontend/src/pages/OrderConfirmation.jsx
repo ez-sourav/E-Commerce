@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getOrder } from "../Services/orderService";
+import { getOrder } from "../services/orderService";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const OrderConfirmation = () => {

@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
-import { getOrder } from "../Services/orderService";
+import { getOrder } from "../services/orderService";
 
 import OrderItems from "../components/orderDetails/OrderItems";
 import OrderAddress from "../components/orderDetails/OrderAddress";

@@ -4,8 +4,8 @@ import {
     registerUser,
     getCurrentUser,
     logoutUser,
-} from "../Services/authService";
-import { syncGuestCart } from "../Services/cartService";
+} from "../services/authService";
+import { syncGuestCart } from "../services/cartService";
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {

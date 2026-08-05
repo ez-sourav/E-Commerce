@@ -4,7 +4,7 @@ import { ArrowLeft, Package } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
-import { getOrders } from "../Services/orderService";
+import { getOrders } from "../services/orderService";
 
 import EmptyOrders from "../components/orders/EmptyOrders";
 import OrderCard from "../components/orders/OrderCard";
