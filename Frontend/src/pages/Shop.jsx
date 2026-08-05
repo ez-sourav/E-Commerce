@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ShopControls from "../components/shop/ShopControls";
 import FilterSidebar from "../components/shop/FilterSidebar";
@@ -11,18 +11,31 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const INITIAL_PRODUCTS = 12;
+  const LOAD_MORE_COUNT = 12;
+
   const [sortBy, setSortBy] = useState("featured");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
- 
-  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const [searchParams] = useSearchParams();
+
+  const initialCategory = searchParams.get("category") || "All";
+
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+
   const [maxPrice, setMaxPrice] = useState(0);
   const [inStockOnly, setInStockOnly] = useState(false);
 
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [visibleCount, setVisibleCount] = useState(INITIAL_PRODUCTS);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const loaderRef = useRef(null);
 
-  const searchQuery =
-    searchParams.get("search")?.toLowerCase().trim() || "";
+  const searchQuery = searchParams.get("search")?.toLowerCase().trim() || "";
+
+
+
+
+  const navigate = useNavigate();
 
   // Fetch Products
   useEffect(() => {
@@ -63,13 +76,20 @@ const Shop = () => {
     }
   };
 
- 
+
   const categories = useMemo(() => {
     return [
       "All",
       ...new Set(products.map((product) => product.category)),
     ];
   }, [products]);
+
+  useEffect(() => {
+    const category =
+      searchParams.get("category") || "All";
+
+    setSelectedCategory(category);
+  }, [searchParams]);
 
   const highestPrice = useMemo(() => {
     if (!products.length) return 0;
@@ -151,7 +171,16 @@ const Shop = () => {
     searchQuery,
   ]);
 
-  
+  useEffect(() => {
+    setVisibleCount(INITIAL_PRODUCTS);
+  }, [
+    searchQuery,
+    selectedCategory,
+    maxPrice,
+    inStockOnly,
+    sortBy,
+  ]);
+
   const activeFilterCount = useMemo(() => {
     let count = 0;
 
@@ -162,8 +191,76 @@ const Shop = () => {
     return count;
   }, [selectedCategory, inStockOnly, maxPrice, highestPrice]);
 
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+
+    const params = new URLSearchParams(searchParams);
+
+    if (category === "All") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+
+    navigate(
+      params.toString()
+        ? `/shop?${params.toString()}`
+        : "/shop",
+      {
+        replace: true,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (
+      loading ||
+      visibleCount >= filteredProducts.length
+    ) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+
+        setIsLoadingMore(true);
+
+        setTimeout(() => {
+          setVisibleCount((prev) =>
+            Math.min(
+              prev + LOAD_MORE_COUNT,
+              filteredProducts.length
+            )
+          );
+
+          setIsLoadingMore(false);
+        }, 500);
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+
+    const currentLoader = loaderRef.current;
+
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [
+    loading,
+    visibleCount,
+    filteredProducts.length,
+  ]);
+
   const clearFilters = () => {
-    setSelectedCategory("All");
+    handleCategoryChange("All");
     setMaxPrice(highestPrice);
     setInStockOnly(false);
   };
@@ -210,7 +307,7 @@ const Shop = () => {
               selectedCategory={selectedCategory}
               maxPrice={maxPrice}
               highestPrice={highestPrice}
-              onCategoryChange={setSelectedCategory}
+              onCategoryChange={handleCategoryChange}
               onPriceChange={setMaxPrice}
               inStockOnly={inStockOnly}
               onStockChange={setInStockOnly}
@@ -221,7 +318,10 @@ const Shop = () => {
           {/* Product Grid */}
           <div className="min-w-0 flex-1">
             <ProductGrid
-              products={filteredProducts}
+              products={filteredProducts.slice(
+                0,
+                visibleCount
+              )}
               loading={loading}
               error={error}
               searchQuery={searchQuery}
@@ -230,6 +330,11 @@ const Shop = () => {
               clearSearch={clearSearch}
               clearFilters={clearFilters}
               clearAll={clearAll}
+              loaderRef={loaderRef}
+              isLoadingMore={isLoadingMore}
+              hasMore={
+                visibleCount < filteredProducts.length
+              }
             />
           </div>
         </div>
@@ -242,7 +347,7 @@ const Shop = () => {
           selectedCategory={selectedCategory}
           maxPrice={maxPrice}
           highestPrice={highestPrice}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={handleCategoryChange}
           onPriceChange={setMaxPrice}
           inStockOnly={inStockOnly}
           onStockChange={setInStockOnly}
