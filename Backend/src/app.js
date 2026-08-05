@@ -2,7 +2,6 @@ import express from "express"
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouters from './routes/auth.route.js'
-import testRoutes from "./routes/test.route.js";
 import productRouters from './routes/product.route.js';
 import cartRoutes from './routes/cart.route.js';
 import orderRoutes from './routes/order.route.js';
@@ -27,7 +26,6 @@ app.use(
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth',authRouters);
-app.use('/api/test',testRoutes);
 app.use('/api/products',productRouters);
 app.use('/api/cart',cartRoutes);
 app.use('/api/orders',orderRoutes);
