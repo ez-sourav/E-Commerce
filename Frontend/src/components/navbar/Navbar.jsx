@@ -24,7 +24,7 @@ const Navbar = () => {
 
   const { cart } = useCart();
 
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, initialLoading, logout } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,6 +87,17 @@ const Navbar = () => {
     }
   };
 
+  if (initialLoading) {
+    return (
+      <header className="sticky top-0 z-50 h-20  bg-white">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-8">
+          <div className="h-8 w-32 animate-pulse rounded bg-gray-200" />
+          <div className="h-10 w-72 animate-pulse rounded-full bg-gray-200" />
+          <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+        </div>
+      </header>
+    );
+  }
   return (
     <>
       <DesktopNavbar
@@ -120,11 +131,11 @@ const Navbar = () => {
         />
       )}
       {!hideMobileNavigation && (
-  <MobileBottomNav
-    user={user}
-    isAuthenticated={isAuthenticated}
-  />
-)}
+        <MobileBottomNav
+          user={user}
+          isAuthenticated={isAuthenticated}
+        />
+      )}
     </>
   );
 };
