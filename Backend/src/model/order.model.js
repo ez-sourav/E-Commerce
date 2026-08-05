@@ -120,7 +120,7 @@ const orderSchema = new mongoose.Schema(
 
         paymentMethod: {
             type: String,
-            enum: ["COD"],
+            enum: ["COD", "CARD"],
             default: "COD",
         },
 
@@ -154,7 +154,7 @@ const orderSchema = new mongoose.Schema(
             min: 0,
         },
     },
-    {timestamps: true,}
+    { timestamps: true, }
 );
 
 export default mongoose.model("Order", orderSchema);

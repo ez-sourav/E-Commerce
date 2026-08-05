@@ -139,7 +139,11 @@ export const createOrderService = async (userId, data) => {
         items: orderItems,
         shippingAddress,
         paymentMethod,
-        paymentStatus: "pending",
+        
+        paymentStatus:
+            paymentMethod === "CARD"
+                ? "paid"
+                : "pending",
         orderStatus: "pending",
         subtotal,
         shippingCharge,

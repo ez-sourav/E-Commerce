@@ -8,7 +8,7 @@ import cartRoutes from './routes/cart.route.js';
 import orderRoutes from './routes/order.route.js';
 import addressRoutes from "./routes/address.route.js";
 import wishlistRoutes from "./routes/wishlist.route.js";
-
+import paymentRoutes from "./routes/payment.routes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./utils/swagger.js";
 
@@ -31,6 +31,7 @@ app.use('/api/test',testRoutes);
 app.use('/api/products',productRouters);
 app.use('/api/cart',cartRoutes);
 app.use('/api/orders',orderRoutes);
+app.use("/api/payments", paymentRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
