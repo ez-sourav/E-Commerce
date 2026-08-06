@@ -19,12 +19,12 @@ import OrderConfirmation from "../pages/OrderConfirmation";
 import MyOrders from "../pages/MyOrders";
 import OrderDetails from "../pages/OrderDetails";
 import ManageAddresses from "../pages/ManageAddresses";
-
+import ScrollToTop from "../components/ScrollToTop";
 const AppRouter = () => {
 
     return (
         <BrowserRouter>
-
+            <ScrollToTop />
             <Toaster
                 richColors
                 position="top-center"
