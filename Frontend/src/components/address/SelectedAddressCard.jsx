@@ -110,7 +110,7 @@ const SelectedAddressCard = ({
                     <div className="flex items-start gap-1.5 xs:gap-2">
                         <MapPin className="h-3 w-3 xs:h-3.5 xs:w-3.5 mt-0.5 shrink-0 text-gray-400" />
 
-                        <p className="text-[11px] xs:text-xs sm:text-sm md:text-base leading-relaxed text-gray-600 sm:leading-6 md:leading-7 break-words pr-1 xs:pr-2">
+                        <p className="text-[11px] xs:text-xs sm:text-sm md:text-base leading-relaxed text-gray-600 sm:leading-6 md:leading-7 wrap-break-word  pr-1 xs:pr-2">
                             {[
                                 address.houseNo,
                                 address.building,

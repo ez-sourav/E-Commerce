@@ -30,16 +30,16 @@ const trustItems = [
 
 const Hero = () => {
     return (
-        <section className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50/30">
+        <section className="relative overflow-hidden bg-linear-to-b from-white to-gray-50/30">
             {/* Background Blur - Optimized for mobile */}
             <div className="absolute -top-24 right-0 h-40 w-40 rounded-full bg-blue-100 blur-3xl opacity-30 sm:h-56 sm:w-56 lg:-top-40 lg:h-125 lg:w-125"></div>
             <div className="absolute -bottom-20 left-0 h-36 w-36 rounded-full bg-gray-100 blur-3xl opacity-40 sm:h-48 sm:w-48 lg:-bottom-32 lg:h-87.5 lg:w-87.5"></div>
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:min-h-[80vh] lg:grid lg:grid-cols-2 lg:items-center lg:gap-14 lg:py-12">
-                
+
                 {/* Right side - Images (Now first on mobile) */}
-                <div className="relative order-1 h-80 w-full max-w-sm mx-auto sm:h-96 md:h-[420px] lg:order-2 lg:h-[550px] lg:max-w-none">
-                    
+                <div className="relative order-1 h-80 w-full max-w-sm mx-auto sm:h-96 md:h-105 lg:order-2 lg:h-137.5 lg:max-w-none">
+
                     {/* Main floating image - Laptop */}
                     <motion.div
                         className="absolute left-1/2 top-1/2 z-20 w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-1.5 shadow-2xl sm:p-2 lg:w-[78%]"
@@ -110,7 +110,7 @@ const Hero = () => {
 
                 {/* Left side - Content (Now second on mobile) */}
                 <div className="relative z-10 order-2 text-center lg:order-1 lg:text-left">
-                    <motion.h1 
+                    <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
@@ -122,7 +122,7 @@ const Hero = () => {
                         </span>
                     </motion.h1>
 
-                    <motion.p 
+                    <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
@@ -133,7 +133,7 @@ const Hero = () => {
                         and fast delivery.
                     </motion.p>
 
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
@@ -144,7 +144,7 @@ const Hero = () => {
                             className="group flex items-center justify-center gap-2 rounded-full bg-[#0A3D91] px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#0A3D91]/90 hover:shadow-lg active:scale-95 sm:px-8 sm:py-4 sm:text-base"
                         >
                             Shop Now
-                            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1 sm:size-[18px]" />
+                            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1 sm:size-4.5" />
                         </Link>
 
                         <button
@@ -163,7 +163,7 @@ const Hero = () => {
                     </motion.div>
 
                     <div className="mt-6 pt-6 sm:mt-8 sm:pt-10">
-                        <div className="mb-6 h-px bg-gradient-to-r from-transparent via-gray-300/70 to-transparent sm:mb-8" />
+                        <div className="mb-6 h-px bg-linear-to-r from-transparent via-gray-300/70 to-transparent sm:mb-8" />
 
                         {/* Trust Items - Responsive grid */}
                         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">

@@ -127,7 +127,7 @@ const WishlistCard = ({ item }) => {
                     </p>
 
                     <Link to={`/product/${_id}`}>
-                        <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-gray-900 transition hover:text-[#0A3D91] md:text-base">
+                        <h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-semibold text-gray-900 transition hover:text-[#0A3D91] md:text-base">
                             {productName}
                         </h3>
                     </Link>
