@@ -33,7 +33,7 @@ const Cart = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="container mx-auto px-4 py-6 sm:py-10"
+      className="container min-h-screen mx-auto px-4 py-6 sm:py-10"
     >
       {/* Header Section */}
       <motion.div 
