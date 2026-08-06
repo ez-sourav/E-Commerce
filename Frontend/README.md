@@ -1,16 +1,130 @@
-# React + Vite
+# 🛍️ Trendify Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and responsive e-commerce frontend built with React, Vite, and Tailwind CSS, providing a seamless shopping experience with authentication, product browsing, wishlist, cart, and Stripe checkout.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📌 Features
 
-## React Compiler
+### 🔐 Authentication
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- User Registration & Login
+- Persistent Authentication
+- Protected Routes
 
-## Expanding the ESLint configuration
+### 🛍️ Shopping
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Browse Products
+- Product Search
+- Category & Price Filters
+- Product Details
+
+### ❤️ Wishlist
+
+- Add to Wishlist
+- Remove from Wishlist
+- View Saved Products
+
+### 🛒 Cart & Checkout
+
+- Add to Cart
+- Update Quantity
+- Remove Items
+- Address Management
+- Stripe Payment Integration
+- Order Confirmation
+
+### 📱 Responsive Design
+
+- Desktop Optimized
+- Tablet Optimized
+- Mobile Optimized
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React, Vite
+- **Styling:** Tailwind CSS
+- **Routing:** React Router
+- **State Management:** Context API
+- **HTTP Client:** Axios
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Payment:** Stripe
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+ ├── assets/
+ ├── components/
+ ├── context/
+ ├── hooks/
+ ├── layouts/
+ ├── pages/
+ ├── routers/
+ ├── services/
+ ├── utils/
+ └── main.jsx
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd Frontend
+```
+
+### 2. Install dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Create `.env` file
+
+```env
+VITE_API_URL=your_backend_url
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+```
+
+### 4. Run the development server
+
+```bash
+pnpm dev
+```
+
+---
+
+## 🌐 Live Demo
+
+**Frontend**
+
+```
+https://trendify-online.vercel.app
+```
+
+**Backend API**
+
+```
+https://e-commerce-3h1k.onrender.com
+```
+
+---
+
+## ⭐ Show Your Support
+
+Give a ⭐ if you like this project!
+
+---
+
+## 👤 Author
+
+**Sourav Biswas**
