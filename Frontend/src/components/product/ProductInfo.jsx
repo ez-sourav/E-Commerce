@@ -371,41 +371,43 @@ const ProductInfo = ({ product }) => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 xs:gap-3">
         <button
           onClick={handleCartAction}
           disabled={isOutOfStock || loading}
-          className="flex items-center justify-center gap-2 rounded-full border-2 border-indigo-600 px-3 py-2.5 text-sm font-semibold text-[#0A3D91] transition hover:cursor-pointer hover:bg-indigo-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 sm:px-5 sm:py-3 sm:text-base"
+          className="flex items-center justify-center gap-1.5 rounded-full border-2 border-indigo-600 px-2 py-2 text-xs font-semibold text-[#0A3D91] transition hover:cursor-pointer hover:bg-indigo-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 xs:gap-2 xs:px-3 xs:py-2.5 xs:text-sm sm:px-5 sm:py-3 sm:text-base"
         >
           {!loading ? (
             isInCart ? (
-              <Trash2 className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+              <Trash2 className="h-3.5 w-3.5 shrink-0 xs:h-4 xs:w-4 sm:h-4.5 sm:w-4.5" />
             ) : (
-              <ShoppingCart className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+              <ShoppingCart className="h-3.5 w-3.5 shrink-0 xs:h-4 xs:w-4 sm:h-4.5 sm:w-4.5" />
             )
           ) : (
-            <Loader2 className="h-4 w-4 animate-spin sm:h-4.5 sm:w-4.5" />
+            <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin xs:h-4 xs:w-4 sm:h-4.5 sm:w-4.5" />
           )}
 
-          {loading
-            ? isInCart
-              ? "Removing..."
-              : "Adding..."
-            : isInCart
-              ? "Remove from Cart"
-              : "Add to Cart"}
+          <span className="truncate text-center">
+            {loading
+              ? isInCart
+                ? "Removing..."
+                : "Adding..."
+              : isInCart
+                ? "Remove"
+                : "Add to Cart"}
+          </span>
         </button>
 
         <button
           onClick={handleBuyNow}
           disabled={isOutOfStock || loading}
-          className="flex items-center justify-center gap-2 rounded-full bg-[#0A3D91] px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-300 sm:px-5 sm:py-3 sm:text-base"
+          className="flex items-center justify-center gap-1.5 rounded-full bg-[#0A3D91] px-2 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-300 xs:gap-2 xs:px-3 xs:py-2.5 xs:text-sm sm:px-5 sm:py-3 sm:text-base"
         >
-          <Zap size={16} className="sm:hidden" />
-          <Zap size={18} className="hidden sm:block" />
-          Buy Now
+          <Zap className="h-3.5 w-3.5 shrink-0 xs:h-4 xs:w-4 sm:h-4.5 sm:w-4.5" />
+          <span className="truncate text-center">Buy Now</span>
         </button>
       </div>
+
 
       <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-gray-100 pt-5">
         {trustRow.map(({ icon: Icon, label }) => (

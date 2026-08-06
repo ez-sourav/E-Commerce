@@ -48,9 +48,9 @@ const WishlistCard = ({ item }) => {
     const totalStock =
         productType === "variant"
             ? variants.reduce(
-                  (total, variant) => total + variant.stock,
-                  0
-              )
+                (total, variant) => total + variant.stock,
+                0
+            )
             : stock;
 
     const inStock = totalStock > 0;
@@ -95,11 +95,10 @@ const WishlistCard = ({ item }) => {
 
                 {/* Stock Badge */}
                 <span
-                    className={`absolute left-2 top-2 rounded-full px-2 py-1 text-[10px] font-medium shadow-sm backdrop-blur-sm ${
-                        inStock
+                    className={`absolute left-2 top-2 rounded-full px-2 py-1 text-[10px] font-medium shadow-sm backdrop-blur-sm ${inStock
                             ? "bg-green-100/90 text-green-700"
                             : "bg-red-100/90 text-red-700"
-                    }`}
+                        }`}
                 >
                     {inStock ? "In Stock" : "Out of Stock"}
                 </span>
@@ -141,11 +140,12 @@ const WishlistCard = ({ item }) => {
                 <Link to={`/product/${_id}`}>
                     <motion.div
                         whileTap={{ scale: 0.97 }}
-                        className="flex items-center justify-center gap-2 rounded-lg bg-[#0A3D91] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#08306f]"
+                        className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#0A3D91] px-2 py-2 text-xs font-medium text-white transition hover:bg-[#08306f] xs:gap-2 xs:px-3 xs:text-sm"
                     >
-                        <Eye size={16} />
-                        View Product
+                        <Eye className="h-4 w-4 shrink-0" />
+                        <span className="text-center line-clamp-1">View Product</span>
                     </motion.div>
+
                 </Link>
             </div>
         </motion.article>

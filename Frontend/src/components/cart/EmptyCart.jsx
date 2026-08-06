@@ -8,7 +8,7 @@ const EmptyCart = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex min-h-[70vh] items-center justify-center bg-gray-50 px-4 pt-12 sm:py-16"
+            className="flex min-h-[70vh] items-center justify-center bg-gray-50 px-4 pt-12 pb-18 sm:py-16"
         >
             <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-lg sm:max-w-lg sm:p-8">
 
