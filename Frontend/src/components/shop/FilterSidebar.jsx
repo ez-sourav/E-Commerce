@@ -11,6 +11,15 @@ const FilterSidebar = ({
   onStockChange,
   onClearFilters,
 }) => {
+  const sliderStep =
+    highestPrice <= 5000
+      ? 100
+      : highestPrice <= 50000
+        ? 500
+        : highestPrice <= 100000
+          ? 1000
+          : 5000;
+
   const hasActiveFilters =
     selectedCategory !== "All" || inStockOnly || maxPrice < highestPrice;
 
@@ -38,7 +47,7 @@ const FilterSidebar = ({
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 lg:px-5 xl:px-6">
-      
+
         <div className="border-b border-gray-100 py-4 lg:py-4">
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 lg:mb-4">
             Categories
@@ -51,9 +60,8 @@ const FilterSidebar = ({
               return (
                 <label
                   key={category}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition ${
-                    isActive ? "bg-blue-50" : "hover:bg-gray-50"
-                  }`}
+                  className={`flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition ${isActive ? "bg-blue-50" : "hover:bg-gray-50"
+                    }`}
                 >
                   <input
                     type="radio"
@@ -65,11 +73,10 @@ const FilterSidebar = ({
                   />
 
                   <span
-                    className={`truncate text-sm ${
-                      isActive
+                    className={`truncate text-sm ${isActive
                         ? "font-medium text-[#0A3D91]"
                         : "text-gray-700"
-                    }`}
+                      }`}
                   >
                     {category}
                   </span>
@@ -88,7 +95,7 @@ const FilterSidebar = ({
             type="range"
             min={0}
             max={highestPrice}
-            step={10}
+            step={sliderStep}
             value={maxPrice}
             onChange={(e) => onPriceChange(Number(e.target.value))}
             className="w-full cursor-grab accent-[#0A3D91] active:cursor-grabbing"

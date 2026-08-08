@@ -14,6 +14,14 @@ const MobileFilterDrawer = ({
   onStockChange,
   onClearFilters,
 }) => {
+  const sliderStep =
+    highestPrice <= 5000
+      ? 100
+      : highestPrice <= 50000
+        ? 500
+        : highestPrice <= 100000
+          ? 1000
+          : 5000;
   return (
     <AnimatePresence>
       {isOpen && (
@@ -32,7 +40,7 @@ const MobileFilterDrawer = ({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed left-0 top-0 z-50 flex h-[100dvh] w-[88vw] max-w-[22rem] flex-col bg-white shadow-xl xs:w-[85vw] sm:w-96 md:w-[26rem] lg:hidden"
+            className="fixed left-0 top-0 z-50 flex h-dvh w-[88vw] max-w-88 flex-col bg-white shadow-xl xs:w-[85vw] sm:w-96 md:w-104 lg:hidden"
           >
             <div className="flex shrink-0 items-center justify-between border-b border-gray-200 p-3.5 xs:p-4 sm:p-5">
               <h2 className="text-base font-semibold text-gray-900 xs:text-lg sm:text-xl">
@@ -63,9 +71,8 @@ const MobileFilterDrawer = ({
                     return (
                       <label
                         key={category}
-                        className={`flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 transition ${
-                          isActive ? "bg-blue-50" : "active:bg-gray-50"
-                        }`}
+                        className={`flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 transition ${isActive ? "bg-blue-50" : "active:bg-gray-50"
+                          }`}
                       >
                         <input
                           type="radio"
@@ -77,11 +84,10 @@ const MobileFilterDrawer = ({
                         />
 
                         <span
-                          className={`truncate text-sm ${
-                            isActive
+                          className={`truncate text-sm ${isActive
                               ? "font-medium text-[#0A3D91]"
                               : "text-gray-700"
-                          }`}
+                            }`}
                         >
                           {category}
                         </span>
@@ -100,7 +106,7 @@ const MobileFilterDrawer = ({
                   type="range"
                   min={0}
                   max={highestPrice}
-                  step={10}
+                  step={sliderStep}
                   value={maxPrice}
                   onChange={(e) => onPriceChange(Number(e.target.value))}
                   className="w-full cursor-grab accent-[#0A3D91] active:cursor-grabbing"

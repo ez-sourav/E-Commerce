@@ -77,8 +77,6 @@ const ShopControls = ({
               transition-all
               hover:border-[#0A3D91]
               focus:border-[#0A3D91]
-              focus:ring-2
-              focus:ring-[#0A3D91]/20
               cursor-pointer
             "
           >
