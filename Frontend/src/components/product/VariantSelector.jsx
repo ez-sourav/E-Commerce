@@ -94,7 +94,13 @@ const VariantSelector = ({
                   )
               );
 
-              const isAvailable = !!matchedVariant;
+              // Pattern C
+              // Enable the button if ANY in-stock variant contains this value.
+              const isAvailable = variants.some(
+                (variant) =>
+                  variant.stock > 0 &&
+                  variant.attributes[attribute] === value
+              );
 
               return (
                 <button
@@ -102,19 +108,42 @@ const VariantSelector = ({
                   type="button"
                   disabled={!isAvailable}
                   onClick={() => {
-                    if (!matchedVariant) return;
-
-                    setSelectedAttributes(nextSelection);
-                    setSelectedVariant(matchedVariant);
-                  }}
-                  className={`rounded-full border px-4 py-2 text-sm font-medium hover:cursor-pointer transition-all
-                    ${isSelected
-                      ? "border-indigo-600 bg-indigo-600 text-white"
-                      : "border-gray-300 bg-white text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
+                    // Exact match exists
+                    if (matchedVariant) {
+                      setSelectedAttributes(nextSelection);
+                      setSelectedVariant(matchedVariant);
+                      return;
                     }
-                    ${!isAvailable
-                      ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-50 "
-                      : ""
+
+                    // Pattern C
+                    // Find the first valid variant having the selected value
+                    const nearestVariant =
+                      variants.find(
+                        (variant) =>
+                          variant.stock > 0 &&
+                          variant.attributes[attribute] === value &&
+                          Object.entries(selectedAttributes).every(
+                            ([key, val]) =>
+                              key === attribute || variant.attributes[key] === val
+                          )
+                      ) ||
+                      variants.find(
+                        (variant) =>
+                          variant.stock > 0 &&
+                          variant.attributes[attribute] === value
+                      );
+
+                    if (!nearestVariant) return;
+
+                    setSelectedAttributes(nearestVariant.attributes);
+                    setSelectedVariant(nearestVariant);
+                  }}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition-all
+                      ${isSelected
+                      ? "border-indigo-600 bg-indigo-600 text-white"
+                      : isAvailable
+                        ? "border-gray-300 bg-white text-gray-700 hover:border-indigo-500 hover:text-indigo-600 hover:cursor-pointer"
+                        : "border-gray-200 bg-gray-100 text-gray-400 opacity-50 cursor-not-allowed"
                     }`}
                 >
                   {value}
