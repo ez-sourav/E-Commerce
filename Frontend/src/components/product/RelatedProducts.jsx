@@ -22,7 +22,7 @@ const RelatedProducts = ({ category, currentProductId }) => {
               product.category === category &&
               product._id !== currentProductId
           )
-          .slice(0, 4);
+          .slice(0, 8);
 
         setProducts(related);
       }
